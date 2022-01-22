@@ -76,26 +76,26 @@ def find_weekly_schedule(driver):
 	time.sleep(1)
 	Xpath = "/html/body/div[3]/table[1]/tbody/tr[2]/td[2]/a"
 	student_menu = driver.find_element(By.XPATH, Xpath)
-	click(student_menu)
+	click(driver, student_menu)
 
 	time.sleep(1)
 	Xpath = "/html/body/div[3]/table[1]/tbody/tr[2]/td[2]/a"
 	registration_menu = driver.find_element(By.XPATH, Xpath)
-	click(registration_menu)
+	click(driver, registration_menu)
 
 	time.sleep(1)
 	Xpath = "/html/body/div[3]/table[1]/tbody/tr[5]/td[2]/a"
 	weekly_schedule = driver.find_element(By.XPATH, Xpath)
-	click(weekly_schedule)
+	click(driver, weekly_schedule)
 
 	time.sleep(1)
 	Xpath = "/html/body/div[3]/form/input"
 	submit_btn = driver.find_element(By.XPATH, Xpath)
-	click(submit_btn)
+	click(driver, submit_btn)
 
 
 #JS click
-def click(elem):
+def click(driver, elem):
 	driver.execute_script("return arguments[0].click()",elem)
 
 
