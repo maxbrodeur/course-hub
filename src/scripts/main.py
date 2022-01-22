@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field, asdict
 import json
+import course_scrape as cs
+
 
 
 @dataclass(slots=True)
@@ -83,6 +85,8 @@ course1 = Course()
 course1.add_assignment(assignment1)
 course1.add_assignment(assignment2)
 
-print(course1.to_json())
+#print(course1.to_json())
+
+cs.get_schedule("nicholas.corneau@mail.mcgill.ca", "nick51199")
 
 
