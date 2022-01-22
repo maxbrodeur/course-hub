@@ -6,7 +6,7 @@ import time
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-
+#FREEZE: pip list --format=freeze > requirements.txt  
 #HELPERS
 
 def delayed_send_keys(element, keys):
@@ -65,8 +65,7 @@ def get_dict(info, times):
 			value = value.replace(c,"")
 		course[key] = value
 
-	print(course)
-
+	return course
 
 
 
@@ -100,34 +99,32 @@ def click(elem):
 	driver.execute_script("return arguments[0].click()",elem)
 
 
-#MAIN
+def get_schedule(email, passwd):
+	#MAIN
 
-EMAIL = ""
-PASSWD = ""
+	#driver = webdriver.Safari()
+	# driver = webdriver.Chrome('../../assets/chromedriver')
+	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
-driver = webdriver.Safari()
-# driver = webdriver.Chrome('../../assets/chromedriver')
-#driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+	driver.get('https://horizon.mcgill.ca/pban1/twbkwbis.P_WWWLogin')
+	time.sleep(3) #	wait for load
+	Xpath = "//input[@id='mcg_un']"
+	username_txt = driver.find_element(By.XPATH, Xpath)
+	Xpath = "//input[@id='mcg_pw']"
+	password_txt = driver.find_element(By.XPATH, Xpath)
+	auth(username_txt, password_txt, EMAIL, PASSWD)
+	find_weekly_schedule(driver)
 
-driver.get('https://horizon.mcgill.ca/pban1/twbkwbis.P_WWWLogin')
-time.sleep(3) #	wait for load
+	time.sleep(1)
+	tables = driver.find_elements(By.CLASS_NAME, 'datadisplaytable')
 
-Xpath = "//input[@id='mcg_un']"
-username_txt = driver.find_element(By.XPATH, Xpath)
-Xpath = "//input[@id='mcg_pw']"
-password_txt = driver.find_element(By.XPATH, Xpath)
+	courses = []
+	for i in range(0,len(tables),2):
+		info = tables[i]
+		times = tables[i+1]
+		courses += [get_dict(info, times)]
 
-auth(username_txt, password_txt, EMAIL, PASSWD)
-find_weekly_schedule(driver)
+	print(courses)
 
-time.sleep(1)
-tables = driver.find_elements(By.CLASS_NAME, 'datadisplaytable')
-
-for i in range(0,len(tables),2):
-	info = tables[i]
-	times = tables[i+1]
-	get_dict(info, times)
-
-
-time.sleep(5)
-driver.close()
+	time.sleep(5)
+	driver.close()
