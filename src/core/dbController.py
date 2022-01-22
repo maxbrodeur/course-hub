@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import psycopg2;
+import psycopg2
 from psycopg2.errors import SerializationFailure
 import json
 import logging
@@ -108,6 +108,7 @@ class dbController:
     def main(self):
         self.connect()
         print("Connected")
+        print(self.conn.closed)
         self.conn.close()
 
 
