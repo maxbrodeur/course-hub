@@ -1,0 +1,21 @@
+# ninja log v5
+15	2210	1642845654184564342	CMakeFiles/core_ui.dir/CalendarTab.cpp.o	fdb271537f3f93db
+33	284	1642841702448656539	CMakeFiles/core_ui.dir/core_ui_autogen/mocs_compilation.cpp.o	412ff0a6df324217
+3	14	0	CMakeFiles/core_ui_autogen	931c06fd9398842d
+2216	2314	1642845654289433284	core_ui	fba47eee5441e616
+3	14	0	core_ui_autogen/mocs_compilation.cpp	931c06fd9398842d
+14	1982	1642842157721982447	CMakeFiles/core_ui.dir/Schedule.cpp.o	498301a412c7cb16
+14	2216	1642845654190677582	CMakeFiles/core_ui.dir/main.cpp.o	476e7666f18c0c3d
+33	3237	1642841705398964891	CMakeFiles/core_ui.dir/MainWidget.cpp.o	d5b846af790c4789
+15	2203	1642845654177321491	CMakeFiles/core_ui.dir/MainTabs.cpp.o	7b4c5d165371e16d
+9	90	0	CMakeFiles/core_ui_autogen	7928d0d4607b4429
+9	90	0	core_ui_autogen/mocs_compilation.cpp	7928d0d4607b4429
+9	90	0	/Users/theofabilous/Documents/GitHub/course-hub/src/client/cmake-build-debug/CMakeFiles/core_ui_autogen	7928d0d4607b4429
+9	90	0	/Users/theofabilous/Documents/GitHub/course-hub/src/client/cmake-build-debug/core_ui_autogen/mocs_compilation.cpp	7928d0d4607b4429
+90	243	1642845930399055315	CMakeFiles/core_ui.dir/core_ui_autogen/mocs_compilation.cpp.o	67b3b3c1ddb8ff1e
+95	3669	1642845933822027228	CMakeFiles/core_ui.dir/MainWidget.cpp.o	4f1f6dc1b7207685
+98	4067	1642845934221927594	CMakeFiles/core_ui.dir/MainTabs.cpp.o	cd5b818eaa074386
+92	4120	1642845934275332667	CMakeFiles/core_ui.dir/main.cpp.o	1c3dd88dd54f233f
+104	4131	1642845934287128027	CMakeFiles/core_ui.dir/Schedule.cpp.o	b6789b6f53121def
+107	4149	1642845934306027193	CMakeFiles/core_ui.dir/CalendarTab.cpp.o	2d08e3ebb3478497
+4149	4209	1642845934366645968	core_ui	fba47eee5441e616
