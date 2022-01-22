@@ -68,6 +68,7 @@ class User:
     first_name: str = ""
     last_name: str = ""
     email: str = ""
+    courses: list = field(default_factory=list)
 
     def to_json(self):
         return json.dumps(asdict(self))
