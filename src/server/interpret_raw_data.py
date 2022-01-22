@@ -2,6 +2,10 @@ from dataclasses import dataclass, field, asdict
 import json
 import course_scrape as cs
 
+secrets = open("../../assets/secrets.txt").readlines()
+email = secrets[0][:-1]
+password = secrets[1]
+
 
 @dataclass(slots=True)
 class Assignment:
@@ -68,83 +72,56 @@ class User:
         return json.dumps(asdict(self))
 
 
-# course_list = cs.get_schedule("nicholas.corneau@mail.mcgill.ca", "nick51199")
-
 def find_days(course, days):
-    if days[0] == "M":
+    if "M" in days:
         course.monday = True
-    elif days[0] == "T":
+    if "T" in days:
         course.tuesday = True
-    elif days[0] == "W":
+    if "W" in days:
         course.wednesday = True
-    elif days[0] == "R":
+    if "R" in days:
         course.thursday = True
-    else:
+    if "F" in days:
         course.friday = True
 
-    if len(days) >= 2:
-        if days[1] == "M":
-            course.monday = True
-        elif days[1] == "T":
-            course.tuesday = True
-        elif days[1] == "W":
-            course.wednesday = True
-        elif days[1] == "R":
-            course.thursday = True
-        else:
-            course.friday = True
 
-    if len(days) >= 3:
-        if days[2] == "M":
-            course.monday = True
-        elif days[2] == "T":
-            course.tuesday = True
-        elif days[2] == "W":
-            course.wednesday = True
-        elif days[2] == "R":
-            course.thursday = True
-        else:
-            course.friday = True
+def find_times(course, times):
+    new_times = times.split(" - ")
+    start_time_hour = new_times[0].split(" ")[0].split(":")[0]
+    start_time_min = new_times[0].split(" ")[0].split(":")[1]
+    start_time_noon = new_times[0].split(" ")[1]
+    end_time_hour = new_times[1].split(" ")[0].split(":")[0]
+    end_time_min = new_times[1].split(" ")[0].split(":")[1]
+    end_time_noon = new_times[1].split(" ")[1]
 
-    if len(days) >= 4:
-        if days[3] == "M":
-            course.monday = True
-        elif days[3] == "T":
-            course.tuesday = True
-        elif days[3] == "W":
-            course.wednesday = True
-        elif days[3] == "R":
-            course.thursday = True
-        else:
-            course.friday = True
+    if start_time_noon == "am" or (start_time_noon == "pm" and start_time_hour == "12"):
+        course.startTime = f"{start_time_hour}:{start_time_min}:00"
 
-    if len(days) >= 5:
-        if days[4] == "M":
-            course.monday = True
-        elif days[4] == "T":
-            course.tuesday = True
-        elif days[4] == "W":
-            course.wednesday = True
-        elif days[4] == "R":
-            course.thursday = True
-        else:
-            course.friday = True
+    else:
+        course.startTime = f"{str(int(start_time_hour) + 12)}:{start_time_min}:00"
+
+    if end_time_noon == "am" or (end_time_noon == "pm" and end_time_hour == "12"):
+        course.endTime = f"{end_time_hour}:{end_time_min}:00"
+
+    else:
+        course.endTime = f"{str(int(end_time_hour) + 12)}:{end_time_min}:00"
 
 
-def get_courses_information():
+def get_courses_information(course_list):
     new_course_list = []
 
     for course in course_list:
         new_course = Course()
         find_days(new_course, course["day"])
+        find_times(new_course, course["times"])
         new_course.subject = course["subject"][1:5]
-        new_course.courseNb = course["subject"][6:9]
+        new_course.courseNb = int(course["subject"][6:9])
         new_course.title = course["title"][:-1]
-        new_course.crn = course["crn"]
+        new_course.crn = int(course["crn"])
         new_course.semester = course["term"][:-5]
         new_course.type = course["type"]
-        new_course.credit = course["credit"][0:1]
-        new_course.year = course["term"][len(course["term"])-4:]
+        new_course.credit = int(course["credits"][0:1])
+        new_course.year = int(course["term"][len(course["term"]) - 4:])
         new_course.section = course["section"][1:]
         new_course.location = course["location"]
 
@@ -154,14 +131,12 @@ def get_courses_information():
         else:
             new_course.instructor = course["instructors"]
 
-        new_course.startTime = course["times"]
+        new_course_list.append(asdict(new_course))
+
+    return new_course_list
 
 
-
-course1 = Course()
-find_days(course1, "F")
-print(course1.monday)
-print(course1.tuesday)
-print(course1.wednesday)
-print(course1.thursday)
-print(course1.friday)
+if __name__ == "__main__":
+    course_list = cs.get_schedule(email, password)
+    new_course_list = get_courses_information(course_list)
+    print(json.dumps(new_course_list))
