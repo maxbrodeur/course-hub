@@ -39,5 +39,7 @@ table;
 	-date (date)
 	-time (time)
 	-location (String)
-	-durationHour (int)
-	-durationMin (int)
+	-duration (interval)
+-registeredClass
+	-studentId
+	-courseId
