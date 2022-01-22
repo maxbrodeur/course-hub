@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from sqlite3 import ProgrammingError
 from time import sleep
 import psycopg2
 from psycopg2.errors import SerializationFailure
@@ -7,6 +8,9 @@ import json
 import logging
 import datetime
 from psycopg2.extras import UUID_adapter
+
+class CourseHubException(Exception):
+    pass
 
 
 class dbController:
@@ -65,31 +69,34 @@ class dbController:
             self.connect()
         #
         with self.conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO courses (subject, faculty, courseNb, title, crn, semester, type, credit, year,
-                section, location, monday, tuesday, wednesday, thursday, friday, instructor, startTime, endTime) 
-                VALUES ( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(
-                    disc["subject"], #0
-                    disc["faculty"], #1
-                    disc["courseNb"], #2
-                    disc["title"], #3
-                    disc["crn"], #4
-                    disc["semester"], #5
-                    disc["type"], #6
-                    disc["credit"], #7
-                    disc["year"], #8
-                    disc["section"], #9
-                    disc["location"], #10
-                    disc["monday"], #11
-                    disc["tuesday"], #12
-                    disc["wednesday"], #13
-                    disc["thursday"], #14
-                    disc["friday"], #15
-                    disc["instructor"], #16
-                    disc["startTime"], #17
-                    disc["endTime"] #18
+            try:
+                cur.execute(
+                    """INSERT INTO courses (subject, courseNb, title, crn, semester, type, credit, year,
+                    section, location, monday, tuesday, wednesday, thursday, friday, instructor, startTime, endTime) 
+                    VALUES ( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(
+                        disc["subject"], #0
+                        disc["courseNb"], #2
+                        disc["title"], #3
+                        disc["crn"], #4
+                        disc["semester"], #5
+                        disc["type"], #6
+                        disc["credit"], #7
+                        disc["year"], #8
+                        disc["section"], #9
+                        disc["location"], #10
+                        disc["monday"], #11
+                        disc["tuesday"], #12
+                        disc["wednesday"], #13
+                        disc["thursday"], #14
+                        disc["friday"], #15
+                        disc["instructor"], #16
+                        disc["startTime"], #17
+                        disc["endTime"] #18
+                    )
                 )
-            )
+            except psycopg2.errors.UniqueViolation as e:
+                self.conn.rollback()
+                raise psycopg2.errors.UniqueViolation
             
             self.updateRowCount(cur.rowcount)
             logging.debug("add_course(): status message: %s", cur.statusmessage)
@@ -99,28 +106,29 @@ class dbController:
         if(self.conn.closed):
             self.connect()
         with self.conn.cursor() as cur:
-            try:
-                cur.execute(
-                    "DELETE FROM courses WHERE crn = %s", (crn, )
-                )
-            except psycopg2.errors.UniqueViolation as e:
-                print("course already in database")
+            cur.execute(
+                "DELETE FROM courses WHERE crn = %s", (crn, )
+            )
             self.updateRowCount(cur.rowcount)
         self.retryCommit()
 
     def add_user(self, disc): #NEED TO HANDLE NON_UNIQUE EMAIL IN APP
         if(self.conn.closed != 0):
             self.connect()
-        #
+        
         with self.conn.cursor() as cur:
-            cur.execute(
-                "INSERT INTO users (firstname, lastname, email, studentid) VALUES (%s, %s, %s, %s)",(
-                    disc["firstname"],
-                    disc["lastname"],
-                    disc["email"],
-                    disc["studentid"]
+            try:
+                cur.execute(
+                    "INSERT INTO users (firstname, lastname, email, studentid) VALUES (%s, %s, %s, %s)",(
+                        disc["firstname"],
+                        disc["lastname"],
+                        disc["email"],
+                        disc["studentid"]
+                    )
                 )
-            )
+            except psycopg2.errors.UniqueViolation as e:
+                self.conn.rollback()
+                raise psycopg2.errors.UniqueViolation
             
             self.updateRowCount(cur.rowcount)
             logging.debug("add_user(): status nmessage: %s", cur.statusmessage)
@@ -225,7 +233,19 @@ class dbController:
             cur.execute(
                 "SELECT * FROM users WHERE email = %s", (email,)
             )
-            
+            try:
+                cur.fetchone()
+            except ProgrammingError as e:
+                raise CourseHubException("No user associated with specified email")
+
+            cur.execute(
+                "SELECT * FROM courses WHERE crn = %s", (crn,)
+            )
+            try:
+                cur.fetchone()
+            except ProgrammingError as e:
+                raise CourseHubException("No course associated with specified CRN")
+
             cur.execute(
                 "INSERT INTO registeredClass (email, crn) VALUES (%s,%s) RETURNING id",(
                     email, crn
