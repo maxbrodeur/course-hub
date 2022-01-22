@@ -17,7 +17,9 @@ find_package(Qt5 COMPONENTS
 
 #find_package(PostgreSQL REQUIRED)
 
-add_executable(core_ui main.cpp MainWidget.cpp MainWidget.h MainTabs.cpp MainTabs.h Schedule.cpp Schedule.h CalendarTab.cpp CalendarTab.h)
+set_property(SOURCE CalendarTab.cpp PROPERTY SKIP_AUTOMOC ON)
+
+add_executable(core_ui main.cpp MainWidget.cpp MainWidget.h MainTabs.cpp MainTabs.h Schedule.cpp Schedule.h CalendarTab.cpp CalendarTab.h CalendarEntryDialog.cpp CalendarEntryDialog.h CalendarEntry.cpp)
 target_link_libraries(core_ui
         Qt5::Core
         Qt5::Gui

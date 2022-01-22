@@ -10,8 +10,15 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QLabel>
 #include <QDialog>
 #include <QObject>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <Qt>
+#include <QtGlobal>
+#include "CalendarEntryDialog.h"
+
 
 CalendarTab::CalendarTab(QWidget *master) : QWidget(master){
     auto *btns = new QGroupBox("Edit schedule");
@@ -25,7 +32,8 @@ CalendarTab::CalendarTab(QWidget *master) : QWidget(master){
     leftBtnLayout->addWidget(addTask);
     btns->setLayout(leftBtnLayout);
 
-    QObject::connect(addCourse, &QPushButton::clicked, this, &CalendarTab::showAddDialog);
+    QObject::connect(addCourse, &QPushButton::clicked, this,
+                     [&](){ CalendarEntryDialog("New course").exec(); });
 
     schedule = new Schedule();
 
@@ -46,11 +54,4 @@ CalendarTab::CalendarTab(QWidget *master) : QWidget(master){
 CalendarTab::~CalendarTab() noexcept = default;
 
 
-void CalendarTab::showAddDialog() {
-    QDialog dialog(this);
-    QVBoxLayout lyt;
-    QPushButton btn("hi");
-    lyt.addWidget(&btn);
-    dialog.setLayout(&lyt);
-    dialog.exec();
-}
+
