@@ -5,20 +5,8 @@ import time
 import sys
 
 
-# HELPERS
-
-def get_platform():
-    platforms = {
-        'linux1': 'Linux',
-        'linux2': 'Linux',
-        'darwin': 'OS X',
-        'win32': 'Windows'
-    }
-    if sys.platform not in platforms:
-        return sys.platform
-
-    return platforms[sys.platform]
-
+#FREEZE: pip list --format=freeze > requirements.txt  
+#HELPERS
 
 def delayed_send_keys(element, keys):
     for key in keys:
@@ -27,52 +15,115 @@ def delayed_send_keys(element, keys):
 
 
 def auth(username_txt, password_txt, email, passwd):
-    count = 4
-    trying = True
-    while trying and count > 0:
-        try:
-            username_txt.send_keys(email)
-            password_txt.send_keys(passwd)
-            trying = False
-        except selenium.common.exceptions.UnexpectedAlertPresentException:
-            count -= 1
-            username_txt.clear()
-            password_txt.clear()
-            time.sleep(0.5)
+	count = 4
+	trying = True
+	while trying and count>0:
+		try:
+			username_txt.send_keys(email)
+			password_txt.send_keys(passwd)
+			trying = False
+		except selenium.common.exceptions.UnexpectedAlertPresentException:
+			count -= 1
+			username_txt.clear()
+			password_txt.clear()
+			time.sleep(0.5)
+	if trying: exit(-1)
+	password_txt.send_keys(Keys.RETURN)
 
-    if trying: exit(-1)
+def get_dict(info, times):
+	course = {}
+
+	title = info.find_element(By.TAG_NAME, "caption").text
+	title = title.split('-')
+	course["title"] = title[0]
+	course["subject"] = title[1]
+	course["section"] = title[2]
+	
+	info = info.find_elements(By.TAG_NAME, 'td')
+	course["term"] = info[0].text
+	course["crn"] = info[1].text
+	course["date"] = info[2].text
+	course["instructor"] = info[3].text
+	course["grading"] = info[4].text
+	course["credits"] = info[5].text
+	course["level"] = info[6].text
+	course["campus"] = info[7].text
+
+	info = times.find_elements(By.TAG_NAME, 'td')
+	course["times"] = info[0].text
+	course["day"] = info[1].text
+	course["location"] = info[2].text
+	course["dates"] = info[3].text
+	course["type"] = info[4].text
+	course["instructors"] = info[5].text
+
+	unwanted = ".\n"
+	for (key, value) in course.items():	
+		for c in unwanted:
+			value = value.replace(c,"")
+		course[key] = value
+
+	return course
 
 
-EMAIL = ""
-PASSWD = ""
 
-platform = get_platform()
+# GET TO SCHEDULE
+def find_weekly_schedule(driver):
 
-if platform == 'Linux':
-    driver = webdriver.Firefox()
+	# BREACHED THE MAINFRAME
+	time.sleep(1)
+	Xpath = "/html/body/div[3]/table[1]/tbody/tr[2]/td[2]/a"
+	student_menu = driver.find_element(By.XPATH, Xpath)
+	click(student_menu)
 
-elif platform == 'OS X':
-    driver = webdriver.Safari()
+	time.sleep(1)
+	Xpath = "/html/body/div[3]/table[1]/tbody/tr[2]/td[2]/a"
+	registration_menu = driver.find_element(By.XPATH, Xpath)
+	click(registration_menu)
 
-else:
-    driver = webdriver.Chrome()
+	time.sleep(1)
+	Xpath = "/html/body/div[3]/table[1]/tbody/tr[5]/td[2]/a"
+	weekly_schedule = driver.find_element(By.XPATH, Xpath)
+	click(weekly_schedule)
 
-driver.get('https://horizon.mcgill.ca/pban1/twbkwbis.P_WWWLogin')
-time.sleep(3)  # wait for load
-
-Xpath = "//input[@id='mcg_un']"
-username_txt = driver.find_element(By.XPATH, Xpath)
-
-Xpath = "//input[@id='mcg_pw']"
-password_txt = driver.find_element(By.XPATH, Xpath)
-
-auth(username_txt, password_txt, EMAIL, PASSWD)
-
-password_txt.send_keys(Keys.RETURN)
-
-# BREACHED THE MAINFRAME
-time.sleep(2)
+	time.sleep(1)
+	Xpath = "/html/body/div[3]/form/input"
+	submit_btn = driver.find_element(By.XPATH, Xpath)
+	click(submit_btn)
 
 
-time.sleep(5)
-driver.close()
+#JS click
+def click(elem):
+	driver.execute_script("return arguments[0].click()",elem)
+
+
+def get_schedule(email, passwd):
+	#MAIN
+
+	#driver = webdriver.Safari()
+	# driver = webdriver.Chrome('../../assets/chromedriver')
+	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
+	driver.get('https://horizon.mcgill.ca/pban1/twbkwbis.P_WWWLogin')
+	time.sleep(3) #	wait for load
+	Xpath = "//input[@id='mcg_un']"
+	username_txt = driver.find_element(By.XPATH, Xpath)
+	Xpath = "//input[@id='mcg_pw']"
+	password_txt = driver.find_element(By.XPATH, Xpath)
+	auth(username_txt, password_txt, EMAIL, PASSWD)
+	find_weekly_schedule(driver)
+
+	time.sleep(1)
+	tables = driver.find_elements(By.CLASS_NAME, 'datadisplaytable')
+
+	courses = []
+	for i in range(0,len(tables),2):
+		info = tables[i]
+		times = tables[i+1]
+		courses += [get_dict(info, times)]
+
+	print(courses)
+
+	time.sleep(5)
+	driver.close()
+
