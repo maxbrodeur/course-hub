@@ -14,15 +14,20 @@ table;
 	-Year (int)
 	-Section (int)
 	-Location (String)
-	-days (M-Th-F) (String)
+	-monday
+	-tuesday
+	-wednesday
+	-thursday
+	-friday
 	-Instructor (String)
 	-startTime (Time)
 	-endTime (Time)
 -users
-	-ID (int)
-	-First Name (string)
-	-Last Name (string)
+	-userid (int)
+	-firstname (string)
+	-lastname (string)
 	-email
+	-studentid
 -assignments
 	-id (int)itu
 	-course (int)
