@@ -1,0 +1,43 @@
+database course-hub
+
+table;
+-courses
+	-courseID (int)
+	-Subject e.g COMP (String)
+	-Faculty (String)
+	-courseNb (int)
+	-Title (String)
+	-CRN (int)
+	-Semester (String)
+	-Type (String)
+	-Credit (int)
+	-Year (int)
+	-Section (int)
+	-Location (String)
+	-days (M-Th-F) (String)
+	-Instructor (String)
+	-startTime (Time)
+	-endTime (Time)
+-users
+	-ID (int)
+	-First Name (string)
+	-Last Name (string)
+	-email
+-assignments
+	-id (int)itu
+	-course (int)
+	-name (string)
+	-dueDate (date)
+	-dueTime (date)
+	-submissionPlatform (string)
+	-submissionPlatformURL (string)
+-exams
+	-id (int)
+	-course (int)
+	-weight (int)
+	-type (string)
+	-date (date)
+	-time (time)
+	-location (String)
+	-durationHour (int)
+	-durationMin (int)
