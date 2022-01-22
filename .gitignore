@@ -1,5 +1,18 @@
 
 *.xml
 .DS_Store
-*.pyc
-assets/secrets.txt
+src/server/__pycache__
+src/client/__pycache__
+src/.DS_Store
+src/.DS_Store
+src/client/cmake-build-debug/.cmake/api/v1/reply/cache-v2-0163ec02918e6cdcd581.json
+src/client/cmake-build-debug/.cmake/api/v1/reply/cache-v2-b627b5baee4c84145b7f.json
+src/client/cmake-build-debug/.cmake/api/v1/reply/cache-v2-0163ec02918e6cdcd581.json
+src/client/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-25b9845337f4609f6e14.json
+src/client/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-cdd9c9d97e5d42acafe5.json
+src/client/cmake-build-debug/.cmake/api/v1/reply/target-core_ui-Debug-d0734969d0abd5c0521c.json
+src/client/cmake-build-debug/.cmake/api/v1/reply/index-2022-01-22T12-15-10-0353.json
+src/client/cmake-build-debug/.ninja_deps
+src/client/cmake-build-debug/.ninja_deps
+src/client/cmake-build-debug/.ninja_log
+.DS_Store

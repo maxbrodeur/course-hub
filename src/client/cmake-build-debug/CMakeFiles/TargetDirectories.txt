@@ -1,0 +1,4 @@
+/Users/theofabilous/Documents/GitHub/course-hub/src/client/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/theofabilous/Documents/GitHub/course-hub/src/client/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/theofabilous/Documents/GitHub/course-hub/src/client/cmake-build-debug/CMakeFiles/core_ui.dir
+/Users/theofabilous/Documents/GitHub/course-hub/src/client/cmake-build-debug/CMakeFiles/core_ui_autogen.dir
