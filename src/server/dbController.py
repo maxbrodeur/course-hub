@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 
+from time import sleep
 import psycopg2
 from psycopg2.errors import SerializationFailure
 import json
 import logging
+import datetime
+from psycopg2.extras import UUID_adapter
+
 
 class dbController:
 
     def __init__(self):
         self.connect()
+        self.rowCount = 0
     
     def connect(self):
         self.conn = psycopg2.connect(
@@ -18,13 +23,52 @@ class dbController:
             port = 26257,
             password = 'dyYDcwElWi4tbbhjnkRobA'
         )
-    def add_course(self,jsonObject):
+
+    def cursor(self):
+        return self.conn.cursor()
+
+    def updateRowCount(self, rowCount):
+        self.rowCount = rowCount
+    
+    def getRowCount(self):
+        return self.rowCount
+
+    def setRowCount(self, c):
+        self.rowCount = c
+
+    def adaptUUID(self, uuid):
+        return UUID_adapter(uuid)
+
+    def retryCommit(self):
+        n = 0
+        max_retries = 6
+        while True:
+            n += 1
+            if n == max_retries:
+                raise psycopg2.Error("did not succed within N retries")
+            try:
+                self.conn.commit()
+                break
+            except psycopg2.Error as e:
+                if e.pgcode != 40001:
+                    raise psycopg2.Error()
+                else:
+                    self.conn.rollback()
+                    sleep(0.5)
+
+    def close(self):
+        self.conn.close()
+
+
+    def add_course(self,disc):
         if(self.conn.closed != 0):
             self.connect()
-        disc = json.loads(jsonObject)
+        #
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO courses VALUES ( '{0}', '{1}', {2}, '{3}', {4}, '{5}', '{6}', {7}, {8}, {9}, '{10}', {11}, {12}, {13}, {14}, {15}, '{16}', {17}, {18} )".format(
+                """INSERT INTO courses (subject, faculty, courseNb, title, crn, semester, type, credit, year,
+                section, location, monday, tuesday, wednesday, thursday, friday, instructor, startTime, endTime) 
+                VALUES ( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(
                     disc["subject"], #0
                     disc["faculty"], #1
                     disc["courseNb"], #2
@@ -46,33 +90,63 @@ class dbController:
                     disc["endTime"] #18
                 )
             )
+            
+            self.updateRowCount(cur.rowcount)
             logging.debug("add_course(): status message: %s", cur.statusmessage)
-        self.conn.commit()
+        self.retryCommit()
 
-    def add_user(self, jsonObject):
+    def delete_course(self, crn):
+        if(self.conn.closed):
+            self.connect()
+        with self.conn.cursor() as cur:
+            try:
+                cur.execute(
+                    "DELETE FROM courses WHERE crn = %s", (crn, )
+                )
+            except psycopg2.errors.UniqueViolation as e:
+                print("course already in database")
+            self.updateRowCount(cur.rowcount)
+        self.retryCommit()
+
+    def add_user(self, disc): #NEED TO HANDLE NON_UNIQUE EMAIL IN APP
         if(self.conn.closed != 0):
             self.connect()
-        disc = json.loads(jsonObject)
+        #
         with self.conn.cursor() as cur:
-            str = "INSERT INTO users (firstname, lastname, email, studentid) VALUES ( '{0}', '{1}', '{2}', {3})".format(
+            cur.execute(
+                "INSERT INTO users (firstname, lastname, email, studentid) VALUES (%s, %s, %s, %s)",(
                     disc["firstname"],
                     disc["lastname"],
                     disc["email"],
                     disc["studentid"]
                 )
-            cur.execute(
-                str
-            ) 
+            )
+            
+            self.updateRowCount(cur.rowcount)
             logging.debug("add_user(): status nmessage: %s", cur.statusmessage)
-        self.conn.commit()
-    
-    def add_assignment(self, jsonObject):
+        self.retryCommit()
+
+    def delete_user(self, email):
         if(self.conn.closed):
             self.connect()
-        disc = json.loads(jsonObject)
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO assignment VALUES ( {0}, '{1}', {2}, {3}, '{4}', '{5}')".format(
+                "DELETE FROM users WHERE email = %s",(email,)
+            )
+            
+            self.updateRowCount(cur.rowcount)
+            logging.debug("delete_user(): status message: %s", cur.statusmessage)
+        self.retryCommit()
+        
+    
+    def add_assignment(self, disc):
+        if(self.conn.closed):
+            self.connect()
+        
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """INSERT INTO assignments (course, name, dueDate, dueTime, submissionPlatform, submissionPlatformURL)
+                 VALUES ( %s,%s,%s,%s,%s,%s) RETURNING assignmentid""",(
                     disc["course"],
                     disc["name"],
                     disc["dueDate"],
@@ -81,16 +155,32 @@ class dbController:
                     disc["submissionPlatformURL"]
                 )
             )
+            id = cur.fetchone()[0]
+            
+            self.updateRowCount(cur.rowcount)
             logging.debug("add_assignment(): status message: %s", cur.statusmessage)
-        self.conn.commit()
+        self.retryCommit()
+        return id
 
-    def add_exam(self, jsonObject):
+    def delete_assignment(self, id):
         if(self.conn.closed):
             self.connect()
-        disc = json.loads(jsonObject)
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO exams VALUES ( {0}, {1}, '{2}', {3}, {4}, '{5}', {6})".format(
+                "DELETE FROM assignments WHERE assignmentid = %s", (id, )
+            )
+            self.updateRowCount(cur.rowcount)
+        logging.debug("delete_assignment(): status message: %s ", cur.statusmessage)
+        self.retryCommit()
+
+    def add_exam(self, disc):
+        if(self.conn.closed):
+            self.connect()
+        
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """INSERT INTO exams (course, weight, type, date, time, location, duration)
+                VALUES ( %s,%s,%s,%s,%s,%s,%s) RETURNING examid""",(
                     disc["course"],
                     disc["weight"],
                     disc["type"],
@@ -100,11 +190,76 @@ class dbController:
                     disc["duration"]
                 )
             )
+            id = cur.fetchone()[0]
+
+            self.updateRowCount(cur.rowcount)
             logging.debug("add_exam(): status message: %s", cur.statusmessage)
-        self.conn.commit()
+        self.retryCommit()
+        return id
+
+    def delete_exam(self, id):
+        if(self.conn.closed):
+            self.connect()
+
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM exams WHERE examid = %s", (id, )
+            )
+            self.updateRowCount(cur.rowcount)
+            logging.debug("delete_exam(): status message: %s", cur.statusmessage)
+        self.retryCommit()
+
+    def getCourse(self, crn):
+        if(self.conn.closed):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT * FROM courses WHERE crn = %s", (crn,))
+            
+            self.updateRowCount(cur.rowcount)
+            return cur.fetchone()
+
+    def add_registeredClass(self, email, crn):
+        if(self.conn.close):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "SELECT * FROM users WHERE email = %s", (email,)
+            )
+            
+            cur.execute(
+                "INSERT INTO registeredClass (email, crn) VALUES (%s,%s) RETURNING id",(
+                    email, crn
+                )
+            )
+            self.updateRowCount(cur.rowcount)
+            id = cur.fetchone()[0]
+        self.retryCommit()
+        return id
+
+    def delete_registeredClass(self, email, crn):
+        if(self.conn.close()):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM registeredClass WHERE email = %s AND crn = %s", (email, crn)
+            )
+            self.updateRowCount(cur.rowcount)
+        self.retryCommit()
+
+
+
 
     def main(self):
         self.connect()
+        x = {
+            "firstname": "John",
+            "lastname": "doe",
+            "email": "jon@doe",
+            "studentid": 433421
+        }
+        y = json.dumps(x)
+        self.add_user(y)
+        #self.delete_user("jon@doe")
         print("Connected")
         print(self.conn.closed)
         self.conn.close()
