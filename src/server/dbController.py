@@ -24,27 +24,26 @@ class dbController:
         disc = json.loads(jsonObject)
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO courses VALUES ( {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20} )".format(
-                    disc["courseID"],
-                    disc["subject"],
-                    disc["faculty"],
-                    disc["courseNb"],
-                    disc["title"],
-                    disc["crn"],
-                    disc["semester"],
-                    disc["type"],
-                    disc["credit"],
-                    disc["year"],
-                    disc["section"],
-                    disc["location"],
-                    disc["monday"],
-                    disc["tuesday"],
-                    disc["wednesday"],
-                    disc["thursday"],
-                    disc["friday"],
-                    disc["instructor"],
-                    disc["startTIme"],
-                    disc["endTime"]
+                "INSERT INTO courses VALUES ( '{0}', '{1}', {2}, '{3}', {4}, '{5}', '{6}', {7}, {8}, {9}, '{10}', {11}, {12}, {13}, {14}, {15}, '{16}', {17}, {18} )".format(
+                    disc["subject"], #0
+                    disc["faculty"], #1
+                    disc["courseNb"], #2
+                    disc["title"], #3
+                    disc["crn"], #4
+                    disc["semester"], #5
+                    disc["type"], #6
+                    disc["credit"], #7
+                    disc["year"], #8
+                    disc["section"], #9
+                    disc["location"], #10
+                    disc["monday"], #11
+                    disc["tuesday"], #12
+                    disc["wednesday"], #13
+                    disc["thursday"], #14
+                    disc["friday"], #15
+                    disc["instructor"], #16
+                    disc["startTIme"], #17
+                    disc["endTime"] #18
                 )
             )
             logging.debug("add_course(): status message: %s", cur.statusmessage)
@@ -55,13 +54,14 @@ class dbController:
             self.connect()
         disc = json.loads(jsonObject)
         with self.conn.cursor() as cur:
-            cur.execute(
-                "INSERT INTO users VALUES ( {1}, {2}, {3}, {4}".format(
-                    disc["id"],
-                    disc["first_name"],
-                    disc["last_name"],
-                    disc["email"]
+            str = "INSERT INTO users (firstname, lastname, email, studentid) VALUES ( '{0}', '{1}', '{2}', {3})".format(
+                    disc["firstname"],
+                    disc["lastname"],
+                    disc["email"],
+                    disc["studentid"]
                 )
+            cur.execute(
+                str
             ) 
             logging.debug("add_user(): status nmessage: %s", cur.statusmessage)
         self.conn.commit()
@@ -72,8 +72,7 @@ class dbController:
         disc = json.loads(jsonObject)
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO assignment VALUES ( {1}, {2}, {3}, {4}, {5}, {6}, {7}".format(
-                    disc["id"],
+                "INSERT INTO assignment VALUES ( {0}, '{1}', {2}, {3}, '{4}', '{5}')".format(
                     disc["course"],
                     disc["name"],
                     disc["dueDate"],
@@ -91,8 +90,7 @@ class dbController:
         disc = json.loads(jsonObject)
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO exams VALUES ( {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}".format(
-                    disc["id"],
+                "INSERT INTO exams VALUES ( {0}, {1}, '{2}', {3}, {4}, '{5}', {6})".format(
                     disc["course"],
                     disc["weight"],
                     disc["type"],
