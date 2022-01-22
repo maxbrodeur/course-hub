@@ -73,10 +73,6 @@ password_txt.send_keys(Keys.RETURN)
 # BREACHED THE MAINFRAME
 time.sleep(2)
 
-Xpath = "/html/body/div[3]/table[1]/tbody/tr[2]/td[2]/a"
-student_menu = driver.find_element(By.XPATH, Xpath)
-print(student_menu.get_attribute('text'))
-student_menu.click()
 
 time.sleep(5)
 driver.close()

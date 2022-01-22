@@ -1,43 +1,23 @@
-# This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
-# platform: osx-64
-# conda list --export > requirements.txt
-# conda create --name <envname> --file 
-async_generator=1.10=py_0
-attrs=21.4.0=pyhd8ed1ab_0
-brotlipy=0.7.0=py310he24745e_1003
-bzip2=1.0.8=h1de35cc_0
-ca-certificates=2021.10.8=h033912b_0
-certifi=2021.10.8=py310h2ec42d9_1
-cffi=1.15.0=py310hcc37b68_0
-cryptography=36.0.0=py310hf6deb26_0
-h11=0.12.0=pyhd8ed1ab_0
-idna=3.3=pyhd8ed1ab_0
-libcxx=12.0.0=h2f01273_0
-libffi=3.4.2=h0d85af4_5
-libzlib=1.2.11=h9173be1_1013
-ncurses=6.3=hca72f7f_2
-openssl=3.0.0=h0d85af4_2
-outcome=1.1.0=pyhd8ed1ab_0
-pip=21.2.4=py310hecd8cb5_0
-pycparser=2.21=pyhd8ed1ab_0
-pyopenssl=21.0.0=pyhd8ed1ab_0
-pysocks=1.7.1=py310h2ec42d9_4
-python=3.10.1=h38b4d05_2_cpython
-python_abi=3.10=2_cp310
-readline=8.1.2=hca72f7f_1
-selenium=4.1.0=pyhd8ed1ab_0
-setuptools=58.0.4=py310hecd8cb5_0
-six=1.16.0=pyh6c4a22f_0
-sniffio=1.2.0=py310h2ec42d9_2
-sortedcontainers=2.4.0=pyhd8ed1ab_0
-sqlite=3.37.0=h707629a_0
-tk=8.6.11=h7bc2e8c_0
-trio=0.19.0=py310h2ec42d9_1
-trio-websocket=0.9.2=pyhd8ed1ab_0
-tzdata=2021e=hda174b7_0
-urllib3=1.26.8=pyhd8ed1ab_1
-wheel=0.37.1=pyhd3eb1b0_0
-wsproto=1.0.0=py310h2ec42d9_2
-xz=5.2.5=h1de35cc_0
-zlib=1.2.11=h9173be1_1013
+async-generator==1.10
+attrs==21.4.0
+brotlipy==0.7.0
+certifi==2021.10.8
+cffi==1.15.0
+cryptography==36.0.0
+h11==0.12.0
+idna==3.3
+outcome==1.1.0
+pip==21.2.4
+pycparser==2.21
+pyOpenSSL==21.0.0
+PySocks==1.7.1
+selenium==4.1.0
+setuptools==58.0.4
+six==1.16.0
+sniffio==1.2.0
+sortedcontainers==2.4.0
+trio==0.19.0
+trio-websocket==0.9.2
+urllib3==1.26.8
+wheel==0.37.1
+wsproto==1.0.0
