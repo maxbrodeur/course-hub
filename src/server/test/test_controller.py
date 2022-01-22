@@ -7,7 +7,6 @@ def test_addDeletecourse():
     controller = dbController()
     x= {
         "subject": "comp",
-        "faculty": "eng",
         "courseNb": "250",
         "title":"Intro to computer science",
         "crn":000,
@@ -85,7 +84,6 @@ def test_getCourse():
     controller = dbController()
     x= {
         "subject": "comp",
-        "faculty": "eng",
         "courseNb": "250",
         "title":"Intro to computer science",
         "crn":250,
@@ -108,6 +106,36 @@ def test_getCourse():
     assert (controller.getCourse(250))[5] == 250
     controller.delete_course(250)
     assert controller.getRowCount() == 1
+
+def test_addDeleteRegClass():
+    controller = dbController()
+    course = {
+        "subject": "comp",
+        "courseNb": "250",
+        "title":"Intro to computer science",
+        "crn":250,
+        "semester": "winter",
+        "type": "lecture",
+        "credit": 3,
+        "year": 2022,
+        "section": 1,
+        "location":"building x",
+        "monday": True,
+        "tuesday": False,
+        "wednesday": True,
+        "thursday": False,
+        "friday": True,
+        "instructor": "Mr.Bean",
+        "startTime": datetime.time(10, 30),
+        "endTime": datetime.time(11,30)
+    }
+    user = {
+        "firstname": "John",
+        "lastname": "doe",
+        "email": "jon@doe",
+        "studentid": 433421
+    }
+    controller.add_registeredClass("jon@doe", 250)
     
 
     
