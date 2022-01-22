@@ -110,7 +110,7 @@ def get_schedule(email, passwd):
 	username_txt = driver.find_element(By.XPATH, Xpath)
 	Xpath = "//input[@id='mcg_pw']"
 	password_txt = driver.find_element(By.XPATH, Xpath)
-	auth(username_txt, password_txt, EMAIL, PASSWD)
+	auth(username_txt, password_txt, email, passwd)
 	find_weekly_schedule(driver)
 
 	time.sleep(1)
