@@ -1,8 +1,5 @@
 
 *.xml
 .DS_Store
-src/server/__pycache__
-src/client/__pycache__
-src/.DS_Store
-.DS_Store
-.DS_Store
+*.pyc
+assets/secrets.txt
