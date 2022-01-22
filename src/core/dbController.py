@@ -104,16 +104,8 @@ class dbController:
         self.conn.commit()
 
     def main(self):
-        x = {
-            "firstname": "john",
-            "lastname": "doe",
-            "email": "johndoegmail.com",
-            "studentid": 239231291
-        }
-        y = json.dumps(x)
         self.connect()
         print("Connected")
-        self.add_user(y)
         print(self.conn.closed)
         self.conn.close()
 
