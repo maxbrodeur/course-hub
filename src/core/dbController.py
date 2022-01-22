@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import psycopg2;
+import psycopg2
 from psycopg2.errors import SerializationFailure
 import json
 import logging
