@@ -1,6 +1,7 @@
 
 *.xml
 .DS_Store
+tests/__pycache__
 src/scripts/__pycache__/course_scrape.cpython-310.pyc
 src/scripts/__pycache__/course_scrape.cpython-310.pyc
 src/scripts/__pycache__/course_scrape.cpython-310.pyc
