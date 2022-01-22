@@ -42,7 +42,7 @@ class dbController:
                     disc["thursday"], #14
                     disc["friday"], #15
                     disc["instructor"], #16
-                    disc["startTIme"], #17
+                    disc["startTime"], #17
                     disc["endTime"] #18
                 )
             )
