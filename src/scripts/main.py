@@ -3,10 +3,8 @@ import json
 import course_scrape as cs
 
 
-
 @dataclass(slots=True)
 class Assignment:
-    id: int = 0
     course: str = ""
     name: str = ""
     dueDate: str = ""
@@ -17,7 +15,6 @@ class Assignment:
 
 @dataclass(slots=True)
 class Exam:
-    id: int = 0
     weight: int = 0
     type: str = ""
     date: str = ""
@@ -29,7 +26,6 @@ class Exam:
 
 @dataclass(slots=True)
 class Course:
-    courseID: int = 0
     subject: str = ""
     faculty: str = ""
     courseNb: int = 0
@@ -39,9 +35,13 @@ class Course:
     type: str = ""
     credit: int = 0
     year: int = 0
-    section: int = 0
+    section: str = ""
     location: str = ""
-    days: str = ""
+    monday: bool = False
+    tuesday: bool = False
+    wednesday: bool = False
+    thursday: bool = False
+    friday: bool = False
     instructor: str = ""
     startTime: str = ""
     endTime: str = ""
@@ -60,7 +60,6 @@ class Course:
 
 @dataclass(slots=True)
 class User:
-    id: int = 0
     first_name: str = ""
     last_name: str = ""
     email: str = ""
@@ -69,24 +68,100 @@ class User:
         return json.dumps(asdict(self))
 
 
-assignment1 = Assignment()
-assignment1.course = "COMP 321"
-assignment1.name = "Assignment 1"
-assignment1.dueDate = "January 22 2022"
-assignment1.dueTime = "9pm"
-assignment1.submissionPlatform = "Crowdmark"
-assignment2 = Assignment()
-user1 = User()
-user1.id = 1
-user1.first_name = "John"
-user1.last_name = "Doe"
-user1.email = "johndoe@gmail.com"
+# course_list = cs.get_schedule("nicholas.corneau@mail.mcgill.ca", "nick51199")
+
+def find_days(course, days):
+    if days[0] == "M":
+        course.monday = True
+    elif days[0] == "T":
+        course.tuesday = True
+    elif days[0] == "W":
+        course.wednesday = True
+    elif days[0] == "R":
+        course.thursday = True
+    else:
+        course.friday = True
+
+    if len(days) >= 2:
+        if days[1] == "M":
+            course.monday = True
+        elif days[1] == "T":
+            course.tuesday = True
+        elif days[1] == "W":
+            course.wednesday = True
+        elif days[1] == "R":
+            course.thursday = True
+        else:
+            course.friday = True
+
+    if len(days) >= 3:
+        if days[2] == "M":
+            course.monday = True
+        elif days[2] == "T":
+            course.tuesday = True
+        elif days[2] == "W":
+            course.wednesday = True
+        elif days[2] == "R":
+            course.thursday = True
+        else:
+            course.friday = True
+
+    if len(days) >= 4:
+        if days[3] == "M":
+            course.monday = True
+        elif days[3] == "T":
+            course.tuesday = True
+        elif days[3] == "W":
+            course.wednesday = True
+        elif days[3] == "R":
+            course.thursday = True
+        else:
+            course.friday = True
+
+    if len(days) >= 5:
+        if days[4] == "M":
+            course.monday = True
+        elif days[4] == "T":
+            course.tuesday = True
+        elif days[4] == "W":
+            course.wednesday = True
+        elif days[4] == "R":
+            course.thursday = True
+        else:
+            course.friday = True
+
+
+def get_courses_information():
+    new_course_list = []
+
+    for course in course_list:
+        new_course = Course()
+        find_days(new_course, course["day"])
+        new_course.subject = course["subject"][1:5]
+        new_course.courseNb = course["subject"][6:9]
+        new_course.title = course["title"][:-1]
+        new_course.crn = course["crn"]
+        new_course.semester = course["term"][:-5]
+        new_course.type = course["type"]
+        new_course.credit = course["credit"][0:1]
+        new_course.year = course["term"][len(course["term"])-4:]
+        new_course.section = course["section"][1:]
+        new_course.location = course["location"]
+
+        if "instructor" in course:
+            new_course.instructor = course["instructor"]
+
+        else:
+            new_course.instructor = course["instructors"]
+
+        new_course.startTime = course["times"]
+
+
+
 course1 = Course()
-course1.add_assignment(assignment1)
-course1.add_assignment(assignment2)
-
-#print(course1.to_json())
-
-cs.get_schedule("nicholas.corneau@mail.mcgill.ca", "nick51199")
-
-
+find_days(course1, "F")
+print(course1.monday)
+print(course1.tuesday)
+print(course1.wednesday)
+print(course1.thursday)
+print(course1.friday)
