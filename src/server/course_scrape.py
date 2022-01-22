@@ -123,8 +123,8 @@ def get_schedule(email, passwd):
 		times = tables[i+1]
 		courses += [get_dict(info, times)]
 
-	print(courses)
-
 	time.sleep(5)
 	driver.close()
+
+	return courses
 
