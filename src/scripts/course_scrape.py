@@ -10,12 +10,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 #HELPERS
 
 def delayed_send_keys(element, keys):
-	for key in keys:
-		element.send_keys(key)
-		time.sleep(0.1)
+    for key in keys:
+        element.send_keys(key)
+        time.sleep(0.1)
 
 
-#AUTHENTIFICATE
 def auth(username_txt, password_txt, email, passwd):
 	count = 4
 	trying = True
@@ -128,3 +127,4 @@ def get_schedule(email, passwd):
 
 	time.sleep(5)
 	driver.close()
+
