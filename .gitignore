@@ -1,4 +1,5 @@
 
 *.xml
 .DS_Store
-src/server/secrets.txt
+*.pyc
+assets/secrets.txt
