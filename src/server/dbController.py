@@ -112,6 +112,7 @@ class dbController:
                 "DELETE FROM courses WHERE crn = %s", (crn, )
             )
             self.delete_course_assignments(crn)
+            self.delete_course_exams(crn)
             self.updateRowCount(cur.rowcount)
         self.retryCommit()
 
