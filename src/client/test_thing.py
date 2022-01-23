@@ -8,5 +8,6 @@ def get_another_number():
 def long_time():
     for i in range(1000000):
         x = 30
+    print()
 
     return 0

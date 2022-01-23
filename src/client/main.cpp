@@ -1,6 +1,9 @@
 #include "pyhelper.h"
-#include <Python.h>
+//#include <Python.h>
+#include <iostream>
 
+
+//#include "pythoncomm.cpp"
 #include <QApplication>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -8,63 +11,118 @@
 #include "MainWidget.h"
 #include "MainTabs.h"
 #include <QTabBar>
-#include <iostream>
+#include <string>
+//#include <iostream>
+
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
+
+
+
 
 using std::cout;
 using std::endl;
+using std::string;
+
+
+
+CPyObject* load_function(const char* func, CPyObject &module){
+//    CPyObject pFunc = PyObject_GetAttrString(module, func);
+    auto *pyfunc = new CPyObject(
+            PyObject_GetAttrString(module, func)
+            );
+    return pyfunc;
+}
+
 
 long call_int_function(const char *func, CPyObject &module){
-    CPyInstance hInstance;
-    CPyObject pFunc = PyObject_GetAttrString(module, "get_zero");
-    if(pFunc && PyCallable_Check(pFunc)) {
-        CPyObject returnVal = PyObject_CallObject(pFunc, nullptr);
+//    CPyObject pFunc = PyObject_GetAttrString(module, func);
+    auto *pFunc = load_function(func, module);
+    if(*pFunc && PyCallable_Check(*pFunc)) {
+        CPyObject returnVal = PyObject_CallObject(*pFunc, nullptr);
         auto return_C = PyLong_AsLong(returnVal);
+//        delete *pFunc;
         return return_C;
     } else {
         PyErr_Print();
+//        delete *pFunc;
         return -1;
     }
-
 }
 
-int pyTest2(){
-    CPyInstance hInstance;
 
-    CPyObject pName = PyUnicode_FromString("test_thing");
-//    CPyObject pName = Py_BuildValue("s#", "test_thing", 10);
-//    std::cout << pName << std::endl;
-    PyRun_SimpleString("import sys");
-    PyRun_SimpleString("sys.path.append(\".\")");
-    CPyObject pModule = PyImport_ImportModule("test_thing");
-    PyErr_Print();
-
-    if(pModule)
-    {
-        auto val = call_int_function("get_zero", pModule);
-        cout << val << endl;
-        auto val_2 = call_int_function("long_time", pModule);
-        cout << val << endl;
-    }
-    else
-    {
+CPyObject* load_module(const char* name, const char* look_in = "."){
+//    auto inst = new CPyInstance();
+    string runner("import sys; sys.path.append(");
+    runner += "\"";
+    runner += look_in;
+    runner += "\")";
+    cout << runner << endl;
+    PyRun_SimpleString(runner.c_str());
+    auto *pyModule = PyImport_ImportModule(name);
+//    module = CPyObject(*PyImport_ImportModule(name));
+//    CPyObject pModule = PyImport_ImportModule(name);
+    if(!pyModule){
         printf("ERROR: Module not imported\n");
+        PyErr_Print();
+        return nullptr;
+    } else {
+        auto *module = new CPyObject(pyModule);
+        return module;
     }
-    return 0;
-
 }
 
-int pyTest(){
-    CPyInstance pyobj;
-//    PyRun_SimpleString("print('Hello!')");
-//    PyRun_SimpleString("import test_thing");
+
+int py_main_test(){
+    CPyInstance hInstance;
+    PyRun_SimpleString("import sys; print(sys.version)");
+    CPyObject *module = load_module("test_thing");
+    assert(*module != nullptr);
+    auto ret = call_int_function("get_zero", *module);
+    printf("%d", static_cast<int>(ret));
+    delete module;
     return 0;
 }
+
+void useless(){
+    int i =0;
+    i ++;
+}
+
+
+void test_interpret_data(){
+    CPyInstance hInstance;
+    const char* py_path = "./../../server/";
+    auto *module = load_module("interpret_raw_data", py_path);
+    assert(module != nullptr);
+    assert(*module != nullptr);
+    auto *pyfunc = load_function("get_information", *module);
+    assert(*module != nullptr);
+    delete *pyfunc;
+    delete *module;
+}
+
+void test_py3_10(){
+    CPyInstance hInstance;
+    auto module = load_module("test_thing");
+//    auto *pyfunc = load_function("three_ten", *module);
+    auto ret = call_int_function("three_ten", *module);
+    assert(ret != -1);
+}
+
+
+
+
+
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    pyTest();
-    pyTest2();
+//    py_main_test();
+//    test_interpret_data();
+    test_py3_10();
+//    pyTest();
+//    pyTest2();
 
     app.setStyleSheet(
 //            "QWidget { background-color: white; }"
