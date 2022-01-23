@@ -82,8 +82,8 @@ class MainTabs(QTabWidget):
 		# sizer = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 		# sizer.setControlType(QSizePolicy.Expanding)
 		# logoWidget.setSizePolicy(sizer);
-		logoWidget.setPixmap(logo.pixmap(QSize(300,160)));
-		self.setCornerWidget(logoWidget, Qt.TopLeftCorner);
+		logoWidget.setPixmap(logo.pixmap(QSize(300,160)))
+		self.setCornerWidget(logoWidget, Qt.TopLeftCorner)
 
 
 
@@ -218,8 +218,8 @@ class ScheduleTab(QTableWidget):
 		print(f"{start=},{end=},{end-start=}")
 		for day_num, in_day in enumerate(days):
 			if in_day:
-				self.setItem(start+1, day_num+1, course_entry.copy())
-				self.setSpan(start+1, day_num+1, end-start, 1)
+				self.setItem(start+2, day_num+1, course_entry.copy())
+				self.setSpan(start+2, day_num+1, end-start, 1)
 
 
 	def testAdd(self, start, dur, name, days):
@@ -251,6 +251,7 @@ app.setStyleSheet(
 	" font-size: 1 px; "
 	" margin-left: 2px; "
 	" margin-right: 2px; "
+	' margin-bottom: 5px; '
 	# " margin-top: 1 px; "
 	"}"
 	"QTabWidget" 
@@ -273,7 +274,7 @@ user_dict = {
 	"lastname":None,
 	"studentid":None,
 	"email": "nicholas.corneau@mail.mcgill.ca",
-	"password": "nick51199"
+	"password": ""
 }
 # email, pw = user_dict['email'],user_dict['password']
 # user_dict = {
