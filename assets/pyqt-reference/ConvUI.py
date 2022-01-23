@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, QTimer, QSize
 from PyQt5.QtGui import QPalette, QColor, QIcon, QBrush, QFont
 from PyQt5.QtWidgets import QMainWindow, QWidget, QFrame, QSlider, QHBoxLayout, QPushButton, \
     QVBoxLayout, QAction, QFileDialog, QApplication, QListView, QListWidgetItem, \
-    QAbstractItemView, QStackedWidget, QMacCocoaViewContainer, QListWidget, QSizePolicy, QDesktopWidget, \
+    QAbstractItemView, QStackedWidget, QListWidget, QSizePolicy, QDesktopWidget, \
     QGridLayout, QGroupBox, QComboBox, QMessageBox, QLineEdit, QLabel, QDialog, QCheckBox, QTabWidget, QDial
 
 # https://www.youtube.com/watch?v=KVEIW2htw0A
@@ -277,4 +277,8 @@ class Converter(QWidget):
 	def createMP4Widget(self, w):
 		None
 
-
+if __name__ == "__main__":
+	app = QApplication(sys.argv)
+	conv = Converter()
+	conv.show()
+	sys.exit(app.exec())
