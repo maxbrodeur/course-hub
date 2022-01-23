@@ -16,8 +16,12 @@ joblib==1.1.0
 nltk==3.6.7
 outcome==1.1.0
 pip==21.2.4
+psycopg2-binary==2.9.3
 pycparser==2.21
 pyOpenSSL==21.0.0
+PyQt5==5.15.6
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.9.0
 PySocks==1.7.1
 python-dateutil==2.8.2
 pytz==2021.3
