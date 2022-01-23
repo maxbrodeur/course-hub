@@ -13,11 +13,11 @@ class CalendarTab: public QWidget {
 public:
     explicit CalendarTab(QWidget* master = nullptr);
     virtual ~CalendarTab() noexcept;
+    Schedule *schedule;
 private:
     QPushButton *addCourse;
     QPushButton *addTutorial;
     QPushButton *addTask;
-    Schedule *schedule;
 public slots:
     void showAddDialog();
 };

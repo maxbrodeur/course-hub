@@ -54,22 +54,11 @@ MainTabs::MainTabs(QWidget *master) : QTabWidget(master){
 
     setTabEnabled(0, true);
     for(int i=1; i<count(); i++){
-        setTabEnabled(i-1, false);
-        setTabEnabled(i, true);
+        setCurrentIndex(i-1);
+        setCurrentIndex(i);
     }
-    setTabEnabled(0, true);
-
-
-
-
-
-
-//    bar->setStyleSheet(" tab { "
-//                       "border: none;"
-//                       "margin-left: 10px;"
-//                       "margin-right: 10px;"
-//                       "font-size:0pt;"
-//                       "} ");
+//    setTabEnabled(count()-1, false);
+    setCurrentIndex(0);
 
 }
 

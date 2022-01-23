@@ -258,7 +258,6 @@ class dbController:
     def getCourse(self, crn):
         if(self.conn.closed):
             self.connect()
-        print(crn)
         with self.conn.cursor() as cur:
             try:
                 cur.execute("SELECT * FROM courses WHERE crn = %s", (crn,))
