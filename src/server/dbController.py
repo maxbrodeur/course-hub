@@ -340,8 +340,6 @@ class dbController:
 
             return courseList
 
-
-
     def main(self):
         self.connect()
         x = {

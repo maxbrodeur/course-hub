@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field, asdict
 import json
 import course_scrape as cs
+from datetime import datetime, time
+from dbController import *
 
 secrets = open("../../assets/secrets.txt").readlines()
 email = secrets[0][:-1]
@@ -31,7 +33,6 @@ class Exam:
 @dataclass(slots=True)
 class Course:
     subject: str = ""
-    faculty: str = ""
     courseNb: int = 0
     title: str = ""
     crn: int = 0
@@ -47,8 +48,8 @@ class Course:
     thursday: bool = False
     friday: bool = False
     instructor: str = ""
-    startTime: str = ""
-    endTime: str = ""
+    startTime: time = time
+    endTime: time = time
     assignments: list = field(default_factory=list)
     exams: list = field(default_factory=list)
 
@@ -67,6 +68,7 @@ class User:
     first_name: str = ""
     last_name: str = ""
     email: str = ""
+    courses: list = field(default_factory=list)
 
     def to_json(self):
         return json.dumps(asdict(self))
@@ -95,16 +97,20 @@ def find_times(course, times):
     end_time_noon = new_times[1].split(" ")[1]
 
     if start_time_noon == "am" or (start_time_noon == "pm" and start_time_hour == "12"):
-        course.startTime = f"{start_time_hour}:{start_time_min}:00"
+        start_time = f"{start_time_hour}:{start_time_min}"
+        course.startTime = datetime.datetime.strptime(start_time, "%H:%M").time()
 
     else:
-        course.startTime = f"{str(int(start_time_hour) + 12)}:{start_time_min}:00"
+        start_time = f"{str(int(start_time_hour) + 12)}:{start_time_min}"
+        course.startTime = datetime.datetime.strptime(start_time, "%H:%M").time()
 
     if end_time_noon == "am" or (end_time_noon == "pm" and end_time_hour == "12"):
-        course.endTime = f"{end_time_hour}:{end_time_min}:00"
+        end_time = f"{end_time_hour}:{end_time_min}"
+        course.endTime = datetime.datetime.strptime(end_time, "%H:%M").time()
 
     else:
-        course.endTime = f"{str(int(end_time_hour) + 12)}:{end_time_min}:00"
+        end_time = f"{str(int(end_time_hour) + 12)}:{end_time_min}"
+        course.endTime = datetime.datetime.strptime(end_time, "%H:%M").time()
 
 
 def get_courses_information(course_list):
@@ -139,4 +145,14 @@ def get_courses_information(course_list):
 if __name__ == "__main__":
     course_list = cs.get_schedule(email, password)
     new_course_list = get_courses_information(course_list)
-    print(json.dumps(new_course_list))
+    db = dbController()
+    count = 0
+    for course in new_course_list:
+        try:
+            db.add_course(course)
+        except psycopg2.errors.UniqueViolation:
+            count += 1
+
+    if count != 0:
+        print(f"{count} courses already exist")
+
