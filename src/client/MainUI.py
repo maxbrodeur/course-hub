@@ -59,7 +59,7 @@ DAYS_MAP = {day:i for i,day in enumerate(('M', 'T', 'W', 'R', 'F'))}
 def getCRNDict(courses):
 	crn_map = {}
 	for course in courses:
-		course_name = course['subject']+"-"+course["courseNb"]
+		course_name = str(course['subject'])+"-"+str(course["courseNb"])
 		crn_map[course_name] = int(course["crn"])
 	return crn_map
 
@@ -81,7 +81,7 @@ class MainTabs(QTabWidget):
 	def query(self, extent=QueryExtent.ALL):
 		for course in get_course_information(self.user.user_dict):
 			self.calendar.addCourse(self.user, course)
-			
+
 		self.requestNewEvents()
 
 		# if extent == QueryExtent.ALL:
@@ -137,8 +137,6 @@ class MainTabs(QTabWidget):
 		# logoWidget.setSizePolicy(sizer);
 		logoWidget.setPixmap(logo.pixmap(QSize(300,160)))
 		self.setCornerWidget(logoWidget, Qt.TopLeftCorner)
-
-
 
 
 class Entry(QTableWidgetItem):
