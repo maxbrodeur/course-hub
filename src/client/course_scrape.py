@@ -125,6 +125,5 @@ def get_schedule(email, passwd):
 
 	time.sleep(5)
 	driver.close()
-
 	return courses
 
