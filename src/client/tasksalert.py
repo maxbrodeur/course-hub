@@ -33,6 +33,7 @@ class TasksView(QWidget):
 		rightLayout.addWidget(self.tasksList)
 		self.layout.addLayout(leftLayout)
 		self.layout.addLayout(rightLayout)
+		self.setLayout(self.layout)
 
 	def getLayout(self):
 		return self.layout
