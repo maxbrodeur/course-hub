@@ -26,14 +26,51 @@ class calendarFrame():
     class examListItem(QListWidgetItem):
         def __init__(self, exam, calendarFrame, parent = None):
             QListWidgetItem.__init__(self, parent)
+            if exam[4] != None:
+                self.date = exam[4]
+                self.day = self.date.day
+                self.month = self.date.month
+
+                match self.month:
+                    case 1:
+                        monthString = "\nJAN" + "  " + str(self.day)
+                    case 2:
+                        monthString = "\nFEB"  + "  " + str(self.day)
+                    case 3:
+                        monthString = "\nMAR" + "  " + str(self.day)
+                    case 4:
+                        monthString = "\nAPR" + "  " + str(self.day)
+                    case 5:
+                        monthString = "\nMAY" + "  " + str(self.day)
+                    case 6:
+                        monthString = "\nJUN" + "  " + str(self.day)
+                    case 7:
+                        monthString = "\nJUL" + "  " + str(self.day)
+                    case 8:
+                        monthString = "\nAUG" + "  " + str(self.day)
+                    case 9:
+                        monthString = "\nSEP" + "  " + str(self.day)
+                    case 10:
+                        monthString = "\nOCT" + "  " + str(self.day)
+                    case 11:
+                        monthString = "\nNOV" + "  " + str(self.day)
+                    case 12:
+                        monthString = "\nDEC" + "  " + str(self.day)
+            else:
+                monthString = ""
+                self.date = None
+
+
+            print(self.date)
             self.setSizeHint(QSize(500, 100))
             self.setBackground(QColor(128,128,128,100))
-            text = calendarFrame.classExamDict[exam[8]] + " " + exam[3]
+            text = calendarFrame.classExamDict[exam[8]] + " " + exam[3] + monthString
             self.setText(text)
             self.setTextAlignment(Qt.AlignJustify)
+            
 
     class calendar(QCalendarWidget):
-        def __init__(self,calendarFrame, parent = None):
+        def __init__(self, calendarFrame, parent = None):
             super().__init__(parent)
             self.calendarFrame = calendarFrame
             
@@ -52,6 +89,19 @@ class calendarFrame():
         self.layout = QHBoxLayout()
         self.list = QListWidget()
         self.list.setItemAlignment(Qt.AlignJustify)
+        self.list.setStyleSheet("QListWidget"
+                                  "{"
+                                  "border : 2px solid black;"
+                                  "}"
+                                  "QListView::item"
+                                  "{"
+                                  "border : 2px solid black;"
+                                  "background: #9ea2a2"
+                                  "}"
+                                  "QListView::item:selected"
+                                  "{"
+                                  "background : #2475dd;"
+                                  "}")
         font = QFont()
         font.setPointSize(20)
         self.list.setFont(font)
@@ -64,14 +114,6 @@ class calendarFrame():
             self.list.addItem(self.examListItem(exam, self))
         self.cal = self.calendar(self)
         self.cal.setGridVisible(True)
-
-        # image = QPixmap(5,5)
-        # painter = QPainter(image)
-        # painter.setBrush(QColor("red"))
-        # rect = QRect(5,5,5,5)
-        # calendarF.calendar.paintCell(painter,rect,QDate(2022,1,12))
-        # painter.fillRect(rect,painter.brush())
-        # painter.end()
         
         self.list.setMaximumWidth(500)
         self.layout.addWidget(self.list)
