@@ -21,3 +21,6 @@ src/server/max_test.py
 .DS_Store
 src/.DS_Store
 src/client/.DS_Store
+.idea
+.vscode
+client/.idea
