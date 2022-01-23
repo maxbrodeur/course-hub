@@ -17,3 +17,4 @@ src/client/cmake-build-debug/.ninja_deps
 src/client/cmake-build-debug/.ninja_log
 .DS_Store
 .DS_Store
+src/server/max_test.py
