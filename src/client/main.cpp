@@ -11,31 +11,54 @@
 #include "MainWidget.h"
 #include "MainTabs.h"
 #include <QTabBar>
+#include <string>
 //#include <iostream>
+
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
 
 
 
 
 using std::cout;
 using std::endl;
+using std::string;
+
+
+
+CPyObject* load_function(const char* func, CPyObject &module){
+//    CPyObject pFunc = PyObject_GetAttrString(module, func);
+    auto *pyfunc = new CPyObject(
+            PyObject_GetAttrString(module, func)
+            );
+    return pyfunc;
+}
 
 
 long call_int_function(const char *func, CPyObject &module){
-//    CPyInstance hInstance;
-    CPyObject pFunc = PyObject_GetAttrString(module, func);
-    if(pFunc && PyCallable_Check(pFunc)) {
-        CPyObject returnVal = PyObject_CallObject(pFunc, nullptr);
+//    CPyObject pFunc = PyObject_GetAttrString(module, func);
+    auto *pFunc = load_function(func, module);
+    if(*pFunc && PyCallable_Check(*pFunc)) {
+        CPyObject returnVal = PyObject_CallObject(*pFunc, nullptr);
         auto return_C = PyLong_AsLong(returnVal);
+//        delete *pFunc;
         return return_C;
     } else {
         PyErr_Print();
+//        delete *pFunc;
         return -1;
     }
 }
 
-CPyObject* load_module(const char* name){
+
+CPyObject* load_module(const char* name, const char* look_in = "."){
 //    auto inst = new CPyInstance();
-    PyRun_SimpleString("import sys; sys.path.append(\".\")");
+    string runner("import sys; sys.path.append(");
+    runner += "\"";
+    runner += look_in;
+    runner += "\")";
+    cout << runner << endl;
+    PyRun_SimpleString(runner.c_str());
     auto *pyModule = PyImport_ImportModule(name);
 //    module = CPyObject(*PyImport_ImportModule(name));
 //    CPyObject pModule = PyImport_ImportModule(name);
@@ -52,11 +75,39 @@ CPyObject* load_module(const char* name){
 
 int py_main_test(){
     CPyInstance hInstance;
+    PyRun_SimpleString("import sys; print(sys.version)");
     CPyObject *module = load_module("test_thing");
+    assert(*module != nullptr);
     auto ret = call_int_function("get_zero", *module);
     printf("%d", static_cast<int>(ret));
     delete module;
     return 0;
+}
+
+void useless(){
+    int i =0;
+    i ++;
+}
+
+
+void test_interpret_data(){
+    CPyInstance hInstance;
+    const char* py_path = "./../../server/";
+    auto *module = load_module("interpret_raw_data", py_path);
+    assert(module != nullptr);
+    assert(*module != nullptr);
+    auto *pyfunc = load_function("get_information", *module);
+    assert(*module != nullptr);
+    delete *pyfunc;
+    delete *module;
+}
+
+void test_py3_10(){
+    CPyInstance hInstance;
+    auto module = load_module("test_thing");
+//    auto *pyfunc = load_function("three_ten", *module);
+    auto ret = call_int_function("three_ten", *module);
+    assert(ret != -1);
 }
 
 
@@ -67,7 +118,9 @@ int py_main_test(){
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    py_main_test();
+//    py_main_test();
+//    test_interpret_data();
+    test_py3_10();
 //    pyTest();
 //    pyTest2();
 

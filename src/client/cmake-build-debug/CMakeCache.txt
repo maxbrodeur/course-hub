@@ -399,6 +399,8 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Python
 FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[/Users/theofabilous/opt/anaconda3/bin/python3.9][/Users/theofabilous/opt/anaconda3/include/python3.9][/Users/theofabilous/opt/anaconda3/lib/libpython3.9.dylib][cfound components: Interpreter Development Development.Module Development.Embed ][v3.9.7(3.9)]
+//Details about finding Python3
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/theofabilous/opt/anaconda3/envs/Py3-10/bin/python][/Users/theofabilous/opt/anaconda3/envs/Py3-10/include/python3.10][/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/libpython3.10.dylib][/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages/numpy/core/include][cfound components: Interpreter Development NumPy Development.Module Development.Embed ][v3.10.0(3.10)]
 //Details about finding PythonInterp
 FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/Users/theofabilous/opt/anaconda3/bin/python3.9][v3.9.7(3.9)]
 //Details about finding PythonLibs
@@ -411,6 +413,18 @@ PYTHON_INCLUDE_DIR-ADVANCED:INTERNAL=1
 PYTHON_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PYTHON_LIBRARY_DEBUG
 PYTHON_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+_Python3_DEVELOPMENT_EMBED_SIGNATURE:INTERNAL=f4ac3024abf6a6d82341f1eb53a1c2fa
+_Python3_DEVELOPMENT_MODULE_SIGNATURE:INTERNAL=59568bfcb396e2bd4059c7c5a72e35ec
+_Python3_EXECUTABLE:INTERNAL=/Users/theofabilous/opt/anaconda3/envs/Py3-10/bin/python
+_Python3_INCLUDE_DIR:INTERNAL=/Users/theofabilous/opt/anaconda3/envs/Py3-10/include/python3.10
+//Python3 Properties
+_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;10;0;64;;cpython-310-darwin;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages
+_Python3_INTERPRETER_SIGNATURE:INTERNAL=d55451a6b0bd4cd02bd5937122e02a54
+//Path to a library.
+_Python3_LIBRARY_RELEASE:INTERNAL=/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/libpython3.10.dylib
+_Python3_NUMPY_SIGNATURE:INTERNAL=b21ec286ad1d4a042b54b2fc6d70cda1
+//Path to a file.
+_Python3_NumPy_INCLUDE_DIR:INTERNAL=/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages/numpy/core/include
 _Python_DEVELOPMENT_EMBED_SIGNATURE:INTERNAL=1cf0d8cf040ae8fec1e53ae28f493ce4
 _Python_DEVELOPMENT_MODULE_SIGNATURE:INTERNAL=b7e3dee384fefe3d012cedd487d159f4
 //Path to a program.
