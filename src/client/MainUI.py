@@ -7,6 +7,9 @@ from itertools import chain, repeat
 from enum import IntEnum
 from os import path
 from monthlyCalendar import calendarFrame
+from interpret_raw_data import get_information
+from datetime import date
+from tasksalert import TasksView
 
 
 file_dir = path.dirname(path.realpath(__file__))
@@ -29,7 +32,7 @@ class MainTabs(QTabWidget):
 	def __init__(self, email, master=None):
 		QTabWidget.__init__(self, master)
 		self.insertCalendar()
-		self.insertTasks()
+		self.insertTasks(TasksView())
 		self.setMinimumWidth(1280)
 		self.setMinimumHeight(720)
 		# setTabIcon(0, *calIcon);
@@ -38,10 +41,9 @@ class MainTabs(QTabWidget):
 		# 	" background-color: white ")
 		# # 	# " QWidget { background-color: white; }"
 		# # 	)
+		self.insertMonthly(email)
 		self.tabBar().setIconSize(QSize(70,70))
 		self.setCornerIcon()
-		calFrame = calendarFrame(email)
-		self.addTab(calFrame.getWidget())
 
 
 	def fixTabIcons(self):
@@ -72,6 +74,14 @@ class MainTabs(QTabWidget):
 		taskIcon.addFile(assets_dir+"tasks_unselected.png", QSize(10, 10), QIcon.Normal, QIcon.Off);
 		taskIcon.addFile(assets_dir+"tasks_subtle_glow.png", QSize(10, 10), QIcon.Normal, QIcon.On);
 		self.addTab(widget, taskIcon, "")
+
+
+	def insertMonthly(self, email):
+		taskIcon = QIcon()
+		taskIcon.addFile(assets_dir+"tasks_unselected.png", QSize(10, 10), QIcon.Normal, QIcon.Off);
+		taskIcon.addFile(assets_dir+"tasks_subtle_glow.png", QSize(10, 10), QIcon.Normal, QIcon.On);
+		calFrame = calendarFrame(email)
+		self.addTab(calFrame.getWidget(), taskIcon, "")
 
 	def setCornerIcon(self):
 		logo = QIcon()
@@ -197,7 +207,7 @@ class ScheduleTab(QTableWidget):
 		start, end = course['startTime'], course['endTime']
 		times = [start, end]
 		for i, time in enumerate(times):
-			h, m = time.split(':')
+			h, m = time.hour, time.minute
 			if (m := int(m)) == 0:
 				times[i] = int(h)*2
 			elif 45 < m < 59:
@@ -239,9 +249,8 @@ class Saver:
 		self.email, self.pw = '', ''
 
 login_save = Saver()
-
 app = QApplication(sys.argv)
-login_dialog = Login(login_save)
+# login_dialog = Login(login_save)
 # login_dialog.getLogin()
 
 app.setStyleSheet(
@@ -265,17 +274,17 @@ app.setStyleSheet(
 # x = ScheduleTab()
 # x.testAdd(8, 3, "MATH 340", "MWF")
 # x.show()
-from interpret_raw_data import get_information
 # pw = input()
-x = MainTabs()
-cal = x.calendar
+
 user_dict = {
 	"firstname":None,
 	"lastname":None,
 	"studentid":None,
 	"email": "nicholas.corneau@mail.mcgill.ca",
-	"password": ""
+	"password": "xuyuehl"
 }
+x = MainTabs(user_dict['email'])
+cal = x.calendar
 # email, pw = user_dict['email'],user_dict['password']
 # user_dict = {
 # 	"firstname":None,
