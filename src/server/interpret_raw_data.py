@@ -3,10 +3,15 @@ import json
 import course_scrape as cs
 from datetime import datetime, time
 from dbController import *
+from os import path
 
-secrets = open("../../assets/secrets.txt").readlines()
-email = secrets[0][:-1]
-password = secrets[1]
+__file_path = path.dirname(path.realpath(__file__))
+__secrets_path = __file_path+"/../../assets/secrets.txt"
+
+with open(__secrets_path, 'r') as f:
+    secrets = f.readlines()
+    email = secrets[0][:-1]
+    password = secrets[1]
 
 
 @dataclass(slots=True)
@@ -164,6 +169,7 @@ def get_information(user_dict):
     for course in registered_classes:
         id, subject, _, *other = course
         final_courses.append(asdict(Course(*(id, subject, *other))))
+
 
 
     return final_courses
