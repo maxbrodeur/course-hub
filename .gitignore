@@ -27,3 +27,6 @@ src/client/.idea
 src/.DS_Store
 src/.DS_Store
 src/.DS_Store
+.DS_Store~Stashed changes
+src/client/cmake-build-debug/CMakeFiles/clion-log.txt
+src/client/cmake-build-debug/CMakeFiles/clion-log.txt
