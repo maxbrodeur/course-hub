@@ -267,8 +267,6 @@ class dbController:
         self.retryCommit()
 
 
-
-
     def main(self):
         self.connect()
         x = {
