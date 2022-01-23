@@ -6,6 +6,8 @@ import sys
 from itertools import chain, repeat
 from enum import IntEnum
 from os import path
+from monthlyCalendar import calendarFrame
+
 
 file_dir = path.dirname(path.realpath(__file__))
 assets_dir = file_dir+"/../../assets/icons/"
@@ -24,7 +26,7 @@ DAYS_MAP = {day:i for i,day in enumerate(('M', 'T', 'W', 'R', 'F'))}
 
 
 class MainTabs(QTabWidget):
-	def __init__(self, master=None):
+	def __init__(self, email, master=None):
 		QTabWidget.__init__(self, master)
 		self.insertCalendar()
 		self.insertTasks()
@@ -38,6 +40,8 @@ class MainTabs(QTabWidget):
 		# # 	)
 		self.tabBar().setIconSize(QSize(70,70))
 		self.setCornerIcon()
+		calFrame = calendarFrame(email)
+		self.addTab(calFrame.getWidget())
 
 
 	def fixTabIcons(self):
@@ -80,6 +84,7 @@ class MainTabs(QTabWidget):
 		# logoWidget.setSizePolicy(sizer);
 		logoWidget.setPixmap(logo.pixmap(QSize(300,160)));
 		self.setCornerWidget(logoWidget, Qt.TopLeftCorner);
+
 
 
 

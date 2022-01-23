@@ -23,4 +23,4 @@ src/.DS_Store
 src/client/.DS_Store
 .idea
 .vscode
-client/.idea
+src/client/.idea
