@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field, asdict
 import json
 import course_scrape as cs
+from datetime import datetime, time
+from dbController import *
 
 secrets = open("../../assets/secrets.txt").readlines()
 email = secrets[0][:-1]
@@ -15,6 +17,7 @@ class Assignment:
     dueTime: str = ""
     submissionPlatform: str = ""
     submissionPlatformURL: str = ""
+    crn: int = 0
 
 
 @dataclass(slots=True)
@@ -26,12 +29,13 @@ class Exam:
     location: str = ""
     durationHour: int = 0
     durationMin: int = 0
+    crn: int = 0
 
 
 @dataclass(slots=True)
 class Course:
+    courseid: int = 0
     subject: str = ""
-    faculty: str = ""
     courseNb: int = 0
     title: str = ""
     crn: int = 0
@@ -47,8 +51,8 @@ class Course:
     thursday: bool = False
     friday: bool = False
     instructor: str = ""
-    startTime: str = ""
-    endTime: str = ""
+    startTime: time = time
+    endTime: time = time
     assignments: list = field(default_factory=list)
     exams: list = field(default_factory=list)
 
@@ -64,13 +68,23 @@ class Course:
 
 @dataclass(slots=True)
 class User:
-    first_name: str = ""
-    last_name: str = ""
+    firstname: str = ""
+    lastname: str = ""
     email: str = ""
+    studentid: int = 0
+    courses: list = field(default_factory=list)
+
+    def get_courses(self):
+        return self.courses
+
+    def add_course(self, course):
+        self.courses.append(course)
 
     def to_json(self):
         return json.dumps(asdict(self))
 
+
+# Helpers
 
 def find_days(course, days):
     if "M" in days:
@@ -95,16 +109,67 @@ def find_times(course, times):
     end_time_noon = new_times[1].split(" ")[1]
 
     if start_time_noon == "am" or (start_time_noon == "pm" and start_time_hour == "12"):
-        course.startTime = f"{start_time_hour}:{start_time_min}:00"
+        start_time = f"{start_time_hour}:{start_time_min}"
+        course.startTime = datetime.datetime.strptime(start_time, "%H:%M").time()
 
     else:
-        course.startTime = f"{str(int(start_time_hour) + 12)}:{start_time_min}:00"
+        start_time = f"{str(int(start_time_hour) + 12)}:{start_time_min}"
+        course.startTime = datetime.datetime.strptime(start_time, "%H:%M").time()
 
     if end_time_noon == "am" or (end_time_noon == "pm" and end_time_hour == "12"):
-        course.endTime = f"{end_time_hour}:{end_time_min}:00"
+        end_time = f"{end_time_hour}:{end_time_min}"
+        course.endTime = datetime.datetime.strptime(end_time, "%H:%M").time()
 
     else:
-        course.endTime = f"{str(int(end_time_hour) + 12)}:{end_time_min}:00"
+        end_time = f"{str(int(end_time_hour) + 12)}:{end_time_min}"
+        course.endTime = datetime.datetime.strptime(end_time, "%H:%M").time()
+
+
+# dict must contain: {"firstname": "", "lastname": "", "studentid": "", "email": "", "password": ""}
+# firstname, lastname and studentid are redundant -> only really need email to identify user
+def get_information(user_dict):
+    new_user = User()
+    new_user.firstname = user_dict["firstname"]
+    new_user.lastname = user_dict["lastname"]
+    new_user.studentid = user_dict["studentid"]
+    new_user.email = user_dict["email"]
+    db = dbController()
+
+    # try to add user if he isn't in the database already
+    try:
+        db.add_user(user_dict)
+    except psycopg2.errors.UniqueViolation:
+        pass
+
+    # try to see if there is already registered courses for this user in the database
+
+    registered_classes = db.getRegisteredClasses(user_dict["email"])
+
+    if len(registered_classes) == 0:
+        course_list = cs.get_schedule(user_dict["email"], user_dict["password"])
+        new_course_list = get_courses_information(course_list)
+
+        # add courses to the database if they are not already there
+        for course in new_course_list:
+            try:
+                db.add_course(course)
+                db.add_registeredClass(user_dict["email"], course["crn"])
+            except psycopg2.errors.UniqueViolation:
+                pass
+
+        registered_classes = db.getRegisteredClasses(user_dict["email"])
+
+    final_courses = []
+
+    for course in registered_classes:
+        id, subject, _, *other = course
+        final_courses.append(asdict(Course(*(id, subject, *other))))
+
+    for course in final_courses:
+        course["startTime"] = course["startTime"].strftime("%H:%M")
+        course["endTime"] = course["endTime"].strftime("%H:%M")
+
+    return json.dumps(final_courses)
 
 
 def get_courses_information(course_list):
@@ -137,6 +202,5 @@ def get_courses_information(course_list):
 
 
 if __name__ == "__main__":
-    course_list = cs.get_schedule(email, password)
-    new_course_list = get_courses_information(course_list)
-    print(json.dumps(new_course_list))
+    # example_dict = {"firstname": "John", "lastname": "Doe", "studentid": "123", "email": email, "password": password}
+    # get_information(example_dict)

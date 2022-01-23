@@ -62,7 +62,19 @@
 		"/Users/theofabilous/opt/anaconda3/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake",
 		"/Users/theofabilous/opt/anaconda3/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake",
 		"/Users/theofabilous/opt/anaconda3/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake",
-		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/CMakeParseArguments.cmake"
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/CMakeParseArguments.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPython.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPython/Support.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPackageHandleStandardArgs.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPackageMessage.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPythonInterp.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPackageHandleStandardArgs.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPackageMessage.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPythonLibs.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/CMakeFindFrameworks.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/SelectLibraryConfigurations.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPackageHandleStandardArgs.cmake",
+		"/Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.21/Modules/FindPackageMessage.cmake"
 	],
 	"CMAKE_SOURCE_DIR" : "/Users/theofabilous/Documents/GitHub/course-hub/src/client",
 	"DEP_FILE" : "",
@@ -97,6 +109,12 @@
 			"/Users/theofabilous/Documents/GitHub/course-hub/src/client/Schedule.h",
 			"MU",
 			"EWIEGA46WW/moc_Schedule.cpp",
+			null
+		],
+		[
+			"/Users/theofabilous/Documents/GitHub/course-hub/src/client/pyhelper.h",
+			"MU",
+			"EWIEGA46WW/moc_pyhelper.cpp",
 			null
 		]
 	],
@@ -187,6 +205,11 @@
 		],
 		[
 			"/Users/theofabilous/Documents/GitHub/course-hub/src/client/main.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/theofabilous/Documents/GitHub/course-hub/src/client/pytest.cpp",
 			"MU",
 			null
 		]
