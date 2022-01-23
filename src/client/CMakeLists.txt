@@ -45,7 +45,7 @@ print_all_variables()
 add_executable(core_ui main.cpp MainWidget.cpp MainWidget.h MainTabs.cpp
         MainTabs.h Schedule.cpp Schedule.h CalendarTab.cpp CalendarTab.h
         CalendarEntryDialog.cpp CalendarEntryDialog.h CalendarEntry.cpp
-        pytest.cpp pyhelper.h)
+        pyhelper.h pythoncomm.cpp)
 target_link_libraries(core_ui
         Qt5::Core
         Qt5::Gui
