@@ -9,17 +9,28 @@ from enum import IntEnum
 from os import path
 from typing import Any
 from monthlyCalendar import calendarFrame
-from interpret_raw_data import get_course_information
+from interpret_raw_data import get_course_information, get_event_information
 from datetime import date
 from tasksalert import TasksView
 from login import Login
+
+'''nicholas.corneau@mail.mcgill.ca
+
+'''
+
+__DEBUG__ = True
 
 
 @dataclass(slots=True)
 class User:
 	email: str = ""
 	pw: str = ""
-	course: dict[str, Any] = field(default_factory=dict)
+	courses: list[dict[str, Any]] = field(default_factory=list)
+
+	@property
+	def user_dict(self):
+		return {"firstname": "", "lastname": "", 
+				"studentid": 123, "email": self.email, "password": self.pw}
 
 
 file_dir = path.dirname(path.realpath(__file__))
@@ -36,6 +47,14 @@ class EntryKind(IntEnum):
 
 
 DAYS_MAP = {day:i for i,day in enumerate(('M', 'T', 'W', 'R', 'F'))}
+
+
+def getCRNDict(courses):
+	crn_map = {}
+	for course in courses:
+		course_name = course['subject']+"-"+course["courseNb"]
+		crn_map[course_name] = int(course["crn"])
+	return crn_map
 
 
 class MainTabs(QTabWidget):
@@ -58,10 +77,12 @@ class MainTabs(QTabWidget):
 		self.setCurrentIndex(0)
 
 	def requestNewEvents(self):
+		events = get_event_information(
+			self.user.user_dict, (courses := self.user.courses), getCRNDict(courses)
+			)
+		for event in events:
+			self.tasks.addTask(event)
 
-		self.tasks.requestEvents(
-			self.user.email, self.user.password)
-		
 
 	def insertCalendar(self):
 		self.calendar = ScheduleTab()
@@ -173,7 +194,8 @@ class ScheduleTab(QTableWidget):
 		self.setStyleSheet(" gridline-color: #FFF9F9 ");
 
 
-	def addCourse(self, course):
+	def addCourse(self, user, course):
+		user.courses.append(course)
 		course_entry = Entry(course['title'], EntryKind.COURSE)
 		course_entry.setInfo(course)
 		weekdays = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday')
@@ -190,14 +212,15 @@ class ScheduleTab(QTableWidget):
 				times[i] = int(h)*2 - 1
 
 		start, end = times
-		print(f"{start=},{end=},{end-start=}")
+		# print(f"{start=},{end=},{end-start=}")
 		for day_num, in_day in enumerate(days):
 			if in_day:
 				self.setItem(start+2, day_num+1, course_entry.copy())
 				self.setSpan(start+2, day_num+1, end-start, 1)
 
-
+	# Deprecated function
 	def testAdd(self, start, dur, name, days):
+		assert not __DEBUG__
 		days_bools = list(repeat(False, 5))
 		for d in days:
 			days_bools[DAYS_MAP[d]] = True
@@ -208,13 +231,8 @@ class ScheduleTab(QTableWidget):
 
 
 
-
-user = User()
-app = QApplication(sys.argv)
-login_dialog = Login(user)
-login_dialog.getLogin()
-
-app.setStyleSheet(
+def stylizeApplication(app):
+	app.setStyleSheet(
 	" QTabBar::tab" 
 	"{"
 	" border: none; "
@@ -232,29 +250,29 @@ app.setStyleSheet(
 	" }"
 	)
 
+
+
+user = User()
+app = QApplication(sys.argv)
+stylizeApplication(app)
+
+login_dialog = Login(user)
+login_dialog.getLogin()
+
+
+x = MainTabs(user)
+cal = x.calendar
 # user_dict = {
 # 	"firstname":None,
 # 	"lastname":None,
 # 	"studentid":None,
-# 	"email": "nicholas.corneau@mail.mcgill.ca",
-# 	"password": "xuyuehl"
+# 	"email": user.email,
+# 	"password": user.pw
 # }
-x = MainTabs(user)
-cal = x.calendar
-# email, pw = user_dict['email'],user_dict['password']
-user_dict = {
-	"firstname":None,
-	"lastname":None,
-	"studentid":None,
-	"email": user.email,
-	"password": user.pw
-}
 
-courses = get_course_information(user_dict)
+courses = get_course_information(user.user_dict)
 for course in courses:
-	cal.addCourse(course)
-# x.calendar.testAdd(8, 3, "MATH 340", "MWF")
-# x.calendar.testAdd(11, 2, "COMP", "TR")
+	cal.addCourse(user, course)
 x.fixTabIcons()
 x.show()
 x.fixTabIcons()
