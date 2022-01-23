@@ -11,3 +11,8 @@ def long_time():
         x = 30
 
     return 0
+
+def three_ten():
+    import bitarray
+    print(bitarray)
+    return 0
