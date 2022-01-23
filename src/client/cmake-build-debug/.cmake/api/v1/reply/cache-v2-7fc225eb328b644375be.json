@@ -1154,6 +1154,18 @@
 			"value" : "[/Users/theofabilous/opt/anaconda3/bin/python3.9][/Users/theofabilous/opt/anaconda3/include/python3.9][/Users/theofabilous/opt/anaconda3/lib/libpython3.9.dylib][cfound components: Interpreter Development Development.Module Development.Embed ][v3.9.7(3.9)]"
 		},
 		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Python3",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding Python3"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[/Users/theofabilous/opt/anaconda3/envs/Py3-10/bin/python][/Users/theofabilous/opt/anaconda3/envs/Py3-10/include/python3.10][/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/libpython3.10.dylib][/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages/numpy/core/include][cfound components: Interpreter Development NumPy Development.Module Development.Embed ][v3.10.0(3.10)]"
+		},
+		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp",
 			"properties" : 
 			[
@@ -1288,6 +1300,114 @@
 			],
 			"type" : "PATH",
 			"value" : "/Users/theofabilous/opt/anaconda3/lib/cmake/Qt5"
+		},
+		{
+			"name" : "_Python3_DEVELOPMENT_EMBED_SIGNATURE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "f4ac3024abf6a6d82341f1eb53a1c2fa"
+		},
+		{
+			"name" : "_Python3_DEVELOPMENT_MODULE_SIGNATURE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "59568bfcb396e2bd4059c7c5a72e35ec"
+		},
+		{
+			"name" : "_Python3_EXECUTABLE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/Users/theofabilous/opt/anaconda3/envs/Py3-10/bin/python"
+		},
+		{
+			"name" : "_Python3_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/Users/theofabilous/opt/anaconda3/envs/Py3-10/include/python3.10"
+		},
+		{
+			"name" : "_Python3_INTERPRETER_PROPERTIES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Python3 Properties"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "Python;3;10;0;64;;cpython-310-darwin;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages;/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages"
+		},
+		{
+			"name" : "_Python3_INTERPRETER_SIGNATURE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "d55451a6b0bd4cd02bd5937122e02a54"
+		},
+		{
+			"name" : "_Python3_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/libpython3.10.dylib"
+		},
+		{
+			"name" : "_Python3_NUMPY_SIGNATURE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "b21ec286ad1d4a042b54b2fc6d70cda1"
+		},
+		{
+			"name" : "_Python3_NumPy_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/Users/theofabilous/opt/anaconda3/envs/Py3-10/lib/python3.10/site-packages/numpy/core/include"
 		},
 		{
 			"name" : "_Python_DEVELOPMENT_EMBED_SIGNATURE",

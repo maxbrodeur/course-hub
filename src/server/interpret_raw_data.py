@@ -202,5 +202,6 @@ def get_courses_information(course_list):
 
 
 if __name__ == "__main__":
+    pass
     # example_dict = {"firstname": "John", "lastname": "Doe", "studentid": "123", "email": email, "password": password}
     # get_information(example_dict)
