@@ -65,12 +65,23 @@ def test_addDeletecourse():
     controller.add_assignment(ass2)
     controller.add_exam(exam1)
     controller.add_exam(exam2)
-    
-    cur = controller.cursor()
 
     controller.setRowCount(0)
-    controller.delete_course(000)
+    controller.delete_course(250)
     assert controller.getRowCount() == 1
+
+    cur = controller.cursor()
+    cur.execute(
+        "SELECT COUNT(*) FROM assignments WHERE courseCRN = %s", (250,)
+    )
+    assert cur.fetchone()[0] == 0
+
+    cur = controller.cursor()
+    cur.execute(
+        "SELECT COUNT(*) FROM exams WHERE courseCRN = %s", (250,)
+    )
+    assert cur.fetchone()[0] == 0
+
 
 def test_addDeleteUser():
     controller = dbController()
@@ -80,11 +91,42 @@ def test_addDeleteUser():
         "email": "jon@doe",
         "studentid": 433421
     }
+    course = {
+        "subject": "comp",
+        "courseNb": "250",
+        "title":"Intro to computer science",
+        "crn":250,
+        "semester": "winter",
+        "type": "lecture",
+        "credit": 3,
+        "year": 2022,
+        "section": 1,
+        "location":"building x",
+        "monday": True,
+        "tuesday": False,
+        "wednesday": True,
+        "thursday": False,
+        "friday": True,
+        "instructor": "Mr.Bean",
+        "startTime": datetime.time(10, 30),
+        "endTime": datetime.time(11,30)
+    }
     controller.add_user(x)
     assert controller.getRowCount() == 1
+    controller.add_course(course)
+    controller.add_registeredClass("jon@doe", 250)
+
     controller.setRowCount(0)
     controller.delete_user("jon@doe")
     assert controller.getRowCount() == 1
+
+    cur = controller.cursor()
+    cur.execute(
+        "SELECT COUNT(*) FROM registeredclass WHERE email = %s", ("jon@doe",)
+    )
+    assert cur.fetchone()[0] == 0
+
+    controller.delete_course(250)
 
 def test_addDeleteAssignment():
     controller = dbController()
@@ -101,6 +143,7 @@ def test_addDeleteAssignment():
     controller.setRowCount(0)
     controller.delete_assignment(id)
     assert controller.getRowCount() == 1
+    controller.setRowCount(0)
 
 def test_addDeleteExam():
     controller = dbController()
@@ -112,13 +155,13 @@ def test_addDeleteExam():
         "time": datetime.time(12,0),
         "location": "building",
         "duration": datetime.timedelta(hours=3),
-        "courseCRN": 1234
+        "courseCRN": 2225
     }
     id = controller.add_exam(x)
     assert controller.getRowCount() == 1
     controller.setRowCount(0)
-    controller.delete_exam(id)
-    assert controller.getRowCount() == 1
+    #controller.delete_exam(id)
+    #assert controller.getRowCount() == 1
 
 def test_getCourse():
     controller = dbController()

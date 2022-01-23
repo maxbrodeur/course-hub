@@ -5,6 +5,7 @@ from sqlite3 import ProgrammingError
 from time import sleep
 import psycopg2
 from psycopg2.errors import SerializationFailure
+from psycopg2 import sql
 import json
 import logging
 import datetime
@@ -165,10 +166,20 @@ class dbController:
             self.connect()
         courseList = self.getRegisteredClasses(email)
         examsList = []
+        crnList = []
         for course in courseList:
-            examsList = self.get_course_exams(course[2])
-            for exam in examsList:
-                examsList.append(exam)
+            crnList.append(course[5])
+        tup = tuple(crnList)
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "SELECT * FROM exams WHERE courseCRN in %s", (tup,)
+            )
+            try:
+                examsList = cur.fetchall()
+            except ProgrammingError:
+                self.conn.rollback()
+                raise CourseHubException("No exams for given users")
+            
         return examsList
 
     def get_user_assignments(self, email):
@@ -177,7 +188,7 @@ class dbController:
         courseList = self.getRegisteredClasses(email)
         assList = []
         for course in courseList:
-            assignmentsList = self.get_course_assignments(course[2])
+            assignmentsList = self.get_course_assignments(course[5])
             for ass in assignmentsList:
                 assList.append(ass)
         return assList
