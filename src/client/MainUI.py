@@ -9,7 +9,7 @@ from enum import IntEnum
 from os import path
 from typing import Any
 from monthlyCalendar import calendarFrame
-from interpret_raw_data import get_information
+from interpret_raw_data import get_course_information
 from datetime import date
 from tasksalert import TasksView
 from login import Login
@@ -58,6 +58,7 @@ class MainTabs(QTabWidget):
 		self.setCurrentIndex(0)
 
 	def requestNewEvents(self):
+
 		self.tasks.requestEvents(
 			self.user.email, self.user.password)
 		
@@ -249,7 +250,7 @@ user_dict = {
 	"password": user.pw
 }
 
-courses = get_information(user_dict)
+courses = get_course_information(user_dict)
 for course in courses:
 	cal.addCourse(course)
 # x.calendar.testAdd(8, 3, "MATH 340", "MWF")
