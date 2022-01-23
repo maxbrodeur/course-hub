@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QTableWidget, QPushButton, QTableWidgetItem, QTabWidget, QApplication, \
-	QAbstractItemView, QHBoxLayout, QHeaderView, QSizePolicy, QLabel, QComboBox, QListWidget, QMenu
+	QAbstractItemView, QHBoxLayout, QHeaderView, QSizePolicy, QLabel, QComboBox, QListWidget, QMenu, QListWidgetItem, QVBoxLayout
 from PyQt5.QtGui import QColor, QIcon
 from PyQt5.QtCore import Qt, QSize, QEvent
 import sys
@@ -67,8 +67,9 @@ class NewList(QListWidget):
 
 class NewTask(QListWidgetItem):
 	def __init__(self, event):
+		type_ = event['''type''']
 		time_str = event['deadline'].strftime("%d/%m/%y")
-		display = f'{event['type']}: Due {time_str}'
+		display = f'{type_}: Due {time_str}'
 		QListWidgetItem.__init__(self,display)
 		self.data = event
 

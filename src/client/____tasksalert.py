@@ -67,8 +67,8 @@ class NewList(QListWidget):
 
 class NewTask(QListWidgetItem):
 	def __init__(self, event):
-		time_str = event['deadline'].strftime("%d/%m/%y")
-		display = f'{event['type']}: Due {time_str}'
+		display = f"{event['type']}: Due "
+		f"{event['deadline'].strftime("%d/%m/%y")}"
 		QListWidgetItem.__init__(self,display)
 		self.data = event
 
