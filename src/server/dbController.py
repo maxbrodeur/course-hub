@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from audioop import add
 from sqlite3 import ProgrammingError
 from time import sleep
 import psycopg2
@@ -75,6 +76,7 @@ class dbController:
                     section, location, monday, tuesday, wednesday, thursday, friday, instructor, startTime, endTime) 
                     VALUES ( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(
                         disc["subject"], #0
+                        #faculty         #1
                         disc["courseNb"], #2
                         disc["title"], #3
                         disc["crn"], #4
@@ -109,6 +111,7 @@ class dbController:
             cur.execute(
                 "DELETE FROM courses WHERE crn = %s", (crn, )
             )
+            self.delete_course_assignments(crn)
             self.updateRowCount(cur.rowcount)
         self.retryCommit()
 
@@ -141,10 +144,20 @@ class dbController:
             cur.execute(
                 "DELETE FROM users WHERE email = %s",(email,)
             )
-            
+            self.delete_user_registeredClasses(email)
             self.updateRowCount(cur.rowcount)
             logging.debug("delete_user(): status message: %s", cur.statusmessage)
         self.retryCommit()
+
+    def get_user(self, email):
+        if(self.conn.closed):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "SELECT * FROM users WHERE email = %s", (email,)
+            )
+            self.updateRowCount(cur.rowcount)
+            return cur.fetchone()
         
     
     def add_assignment(self, disc):
@@ -153,14 +166,14 @@ class dbController:
         
         with self.conn.cursor() as cur:
             cur.execute(
-                """INSERT INTO assignments (course, name, dueDate, dueTime, submissionPlatform, submissionPlatformURL)
+                """INSERT INTO assignments (name, dueDate, dueTime, submissionPlatform, submissionPlatformURL, courseCRN)
                  VALUES ( %s,%s,%s,%s,%s,%s) RETURNING assignmentid""",(
-                    disc["course"],
                     disc["name"],
                     disc["dueDate"],
                     disc["dueTime"],
                     disc["submissionPlatform"],
-                    disc["submissionPlatformURL"]
+                    disc["submissionPlatformURL"],
+                    disc["courseCRN"]
                 )
             )
             id = cur.fetchone()[0]
@@ -181,21 +194,35 @@ class dbController:
         logging.debug("delete_assignment(): status message: %s ", cur.statusmessage)
         self.retryCommit()
 
+    def delete_course_assignments(self, crn):
+        if(self.conn.closed):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM assignments WHERE courseCRN = %s", (crn,)
+            )
+            self.updateRowCount(cur.rowcount)
+        self.retryCommit()
+    
+    def get_courseAssignments(self, crn):
+        pass
+
+
     def add_exam(self, disc):
         if(self.conn.closed):
             self.connect()
         
         with self.conn.cursor() as cur:
             cur.execute(
-                """INSERT INTO exams (course, weight, type, date, time, location, duration)
+                """INSERT INTO exams (weight, type, date, time, location, duration, courseCRN)
                 VALUES ( %s,%s,%s,%s,%s,%s,%s) RETURNING examid""",(
-                    disc["course"],
                     disc["weight"],
                     disc["type"],
                     disc["date"],
                     disc["time"],
                     disc["location"],
-                    disc["duration"]
+                    disc["duration"],
+                    disc["courseCRN"]
                 )
             )
             id = cur.fetchone()[0]
@@ -217,14 +244,29 @@ class dbController:
             logging.debug("delete_exam(): status message: %s", cur.statusmessage)
         self.retryCommit()
 
+    def delete_course_exams(self, crn):
+        if(self.conn.closed):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM exams WHERE courseCRN = %s", (crn,)
+            )
+            self.updateRowCount(cur.rowcount)
+        self.retryCommit()
+
     def getCourse(self, crn):
         if(self.conn.closed):
             self.connect()
         with self.conn.cursor() as cur:
-            cur.execute("SELECT * FROM courses WHERE crn = %s", (crn,))
+            try:
+                cur.execute("SELECT * FROM courses WHERE crn = %s", (crn,))
+                res = cur.fetchone()            
+            except ProgrammingError as e:
+                self.conn.rollback()
+                raise CourseHubException("No course for given crn")
             
             self.updateRowCount(cur.rowcount)
-            return cur.fetchone()
+            return res
 
     def add_registeredClass(self, email, crn):
         if(self.conn.close):
@@ -236,6 +278,7 @@ class dbController:
             try:
                 cur.fetchone()
             except ProgrammingError as e:
+                self.conn.rollback()
                 raise CourseHubException("No user associated with specified email")
 
             cur.execute(
@@ -244,6 +287,7 @@ class dbController:
             try:
                 cur.fetchone()
             except ProgrammingError as e:
+                self.conn.rollback()
                 raise CourseHubException("No course associated with specified CRN")
 
             cur.execute(
@@ -257,7 +301,7 @@ class dbController:
         return id
 
     def delete_registeredClass(self, email, crn):
-        if(self.conn.close()):
+        if(self.conn.close):
             self.connect()
         with self.conn.cursor() as cur:
             cur.execute(
@@ -266,6 +310,33 @@ class dbController:
             self.updateRowCount(cur.rowcount)
         self.retryCommit()
 
+    def delete_user_registeredClasses(self, email):
+        if(self.conn.closed):
+            self.connect()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM registeredclass WHERE email = %s", (email,)
+            )
+            self.updateRowCount(cur.rowcount)
+        self.retryCommit()
+
+    def getRegisteredClasses(self, email):
+        if(self.conn.close):
+            self.connect()
+        with self.conn.cursor() as cur:
+            try:
+                cur.execute(
+                    "SELECT * FROM registeredClass WHERE email = %s ORDER BY crn", (email, )
+                )
+                rows = cur.fetchall()
+            except ProgrammingError as e:
+                self.conn.rollback()
+                raise CourseHubException("No registered class for given user")
+            courseList = []
+            for row in rows:
+                courseList.append(self.getCourse(row[2]))
+
+            return courseList
 
     def main(self):
         self.connect()
