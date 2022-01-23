@@ -39,15 +39,15 @@ MainTabs::MainTabs(QWidget *master) : QTabWidget(master){
     addTab(calendarTab, calIcon, "");
     addTab(assignmentsTab, taskIcon, "");
 
-//    QIcon logo;
-//    logo.addFile("icons/temp-logo.png", QSize(250,100));
-//    auto *logoWidget = new QLabel();
-//    logoWidget->setMinimumSize(250, 100);
+    QIcon logo;
+    logo.addFile("icons/logo-padded-test.png", QSize(200,100));
+    auto *logoWidget = new QLabel();
+    logoWidget->setMinimumSize(300,20);
 //    QSizePolicy sizer(QSizePolicy::Expanding, QSizePolicy::Expanding);
-////    sizer.setControlType(QSizePolicy::Expanding);
+//    sizer.setControlType(QSizePolicy::Expanding);
 //    logoWidget->setSizePolicy(sizer);
-//    logoWidget->setPixmap(logo.pixmap(QSize(250,100)));
-//    setCornerWidget(logoWidget, Qt::TopLeftCorner);
+    logoWidget->setPixmap(logo.pixmap(QSize(300,160)));
+    setCornerWidget(logoWidget, Qt::TopLeftCorner);
 
     auto *bar = tabBar();
     bar->setIconSize(QSize(80,80));
