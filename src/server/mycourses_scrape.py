@@ -8,20 +8,23 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-email = "max.brodeur@mail.mcgill.ca"
-passwd = "kingofthepirates"
+import datefinder
+from nltk import tokenize
+import nltk
 
-def click(driver, elem):
+nltk.download("punkt")
+
+def click(elem):
 	driver.execute_script("return arguments[0].click()",elem)
 
-def getShadowRoot(driver, host):
+def getShadowRoot(host):
     shadowRoot = driver.execute_script("return arguments[0].shadowRoot", host)
     return shadowRoot
 
-def get_to_courses(driver):
+def mycourses_auth(email, passwd):
 	Xpath = '//*[@id="link1"]'
 	mcgill_btn = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
-	click(driver, mcgill_btn)
+	click(mcgill_btn)
 
 	Xpath = '//*[@id="i0116"]'
 	email_txt = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
@@ -29,7 +32,7 @@ def get_to_courses(driver):
 
 	Xpath = '//*[@id="idSIButton9"]'
 	next_btn = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
-	click(driver, next_btn)
+	click(next_btn)
 
 	Xpath = '//*[@id="passwordInput"]'
 	passwd_txt = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
@@ -37,7 +40,7 @@ def get_to_courses(driver):
 
 	Xpath = '//*[@id="submitButton"]'
 	submit_btn = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
-	click(driver, submit_btn)
+	click(submit_btn)
 
 	#AUTHENTIFICATOR!!!!
 	Xpath = '//*[@id="idDiv_SAOTCAS_Title"]'
@@ -45,16 +48,15 @@ def get_to_courses(driver):
 	print("AUTHENTIFICATOR")
 	Xpath = '//*[@id="idChkBx_SAOTCAS_TD"]'
 	chkbx = driver.find_element(By.XPATH, Xpath)
-	click(driver,chkbx)
+	click(chkbx)
 	Xpath = '//*[@id="lightbox"]/div[3]/div/div[2]/div/div[1]'
 	element = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
 	print("HERE!")
 	Xpath = '//*[@id="idBtn_Back"]'
 	no_btn = driver.find_element(By.XPATH, Xpath)
-	click(driver,no_btn)
+	click(no_btn)
 
-def get_to_course(driver, course):
-	
+def get_to_course(subject):
 	time.sleep(7)
 	Xpath = '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div[1]/d2l-expand-collapse-content/div/d2l-my-courses'
 	root = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath))).shadow_root
@@ -66,32 +68,118 @@ def get_to_course(driver, course):
 	tabs = root.find_elements(By.CSS_SELECTOR, 'd2l-enrollment-card')
 
 	cards = [tab.shadow_root.find_element(By.CSS_SELECTOR, 'd2l-card') for tab in tabs]
-	card = (card for card in cards if course in card.get_attribute('text')).__next__()
+	card = (card for card in cards if subject in card.get_attribute('text')).__next__()
 	
-	click(driver, card.shadow_root.find_element(By.CSS_SELECTOR, 'div > a'))
+	click(card.shadow_root.find_element(By.CSS_SELECTOR, 'div > a'))
 
-def get_to_content(driver):
-
+def get_to_content():
 	Xpath = '/html/body/header/nav/d2l-navigation/d2l-navigation-main-footer/div/div/div[1]/a'
 	root = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
-	click(driver, root)
+	click(root)
+
+def get_announcements(subject):
+	get_to_course(subject)
+	#CLICK ALL ANNOUCEMENTS
+	Xpath = '/html/body/div[2]/div[2]/div/div/div[1]/div/d2l-expand-collapse-content/div/div[1]/div/a'
+	root = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
+	click(root)
+
+	Xpath = '/html/body/div[2]/div/div[3]/div/div/div[2]/form/div/div/d2l-table-wrapper/table'
+	table = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
+	elems = table.find_elements(By.CSS_SELECTOR, 'tr')
+
+	announcements = []
+	#FIRST IS TITLE -- SKIP
+	for i in range(1,len(elems),2):
+		announcement = {}
+		announcement["subject"] = subject
+		head = elems[i]
+		title = head.find_element(By.CSS_SELECTOR, 'a').text
+		date = head.find_element(By.CSS_SELECTOR, 'label').text
+		body = elems[i+1]
+		body_elems = body.find_elements(By.CSS_SELECTOR,"*")
+		text = ""
+		for e in body_elems:
+			try: 
+				text += e.text
+			except:
+				pass
+		announcement['title'] = title
+		announcement['date'] = date
+		announcement['text'] = text
+
+		announcements += [announcement]
+
+	return announcements
+
+def parse_events(announcements):
+
+	keywords = ["quiz","exam","midterm","final","test","assignment","paper","project","homework","pset","problem set","hw","ass","webwork","lab","workshop"]
+
+	events = []
+
+	for anc in announcements:
+		text = anc["text"]
+		text = tokenize.sent_tokenize(text) #SPlITS INTO SENTENCES USING NLP
+		for sent in text:
+			sent = sent.lower()
+			words = tokenize.word_tokenize(sent)
+			union = list(set(keywords) & set(words))
+			if union:
+				event = {}
+				typ = ""
+				[typ := typ + " " + key for key in union]
+				typ = typ[1:]
+				dates = datefinder.find_dates(sent)
+				dates = [date for date in dates]
+				if dates:
+					date = dates[0]
+				else:
+					date = None
+				#TREAT OTHER CASES
+				event['type'] = typ
+				event['deadline'] = date
+				event['length'] = 0
+				event['title'] = anc['title']
+				event['date'] = datefinder.find_dates(anc['date'])
+				#event['text'] = anc['text']
+
+				events += [event]
+
+	return events
 
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-driver.get('https://mycourses2.mcgill.ca/d2l/loginh/?target=%2fd2l%2fhome')
+def get_events(subjects, email, passwd):
+	try: 
+		start_mycourses(email,passwd)
+	except:
+		print("LOGIN FAILED")
+		return None
 
-try:
-	get_to_courses(driver)
-except selenium.common.exceptions.TimeoutException:
-	print("Took too long to authentificate")
+	events = []
+	for subject in subjects:
+		announcements = get_announcements(subject)
+		events += parse_events(announcements)
+		back_to_home()
 
-get_to_course(driver, "MATH-340")
-get_to_content(driver)
-#GET TERM TAB
-
-
-#tabs = WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, Xpath)))
+	mycourses_close()
+	return events
+	
 
 
-time.sleep(5)
-driver.close()
+def start_mycourses(email, passwd):
+	global driver
+	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+	driver.get('https://mycourses2.mcgill.ca/d2l/loginh/?target=%2fd2l%2fhome')
+	try:
+		mycourses_auth(email,passwd)
+	except selenium.common.exceptions.TimeoutException:
+		print("Authentification failed")
+
+def back_to_home():
+	driver.get('https://mycourses2.mcgill.ca/d2l/home')
+
+
+def mycourses_close():
+	driver.close()
+
