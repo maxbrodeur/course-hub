@@ -15,6 +15,11 @@ from tasksalert import TasksView
 from login import Login
 
 
+'''nicholas.corneau@mail.mcgill.ca
+'''
+
+__DEBUG__ = True
+
 @dataclass(slots=True)
 class User:
 	email: str = ""
