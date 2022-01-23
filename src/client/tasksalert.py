@@ -28,7 +28,7 @@ class TasksView(QWidget):
 		rightLabel = QLabel("To-do")
 		rightLayout.addWidget(rightLabel)
 		self.tasksList = QListWidget()
-		self.newList = NewList(tasksList)
+		self.newList = NewList(self.tasksList)
 		leftLayout.addWidget(self.newList)
 		rightLayout.addWidget(self.tasksList)
 		self.layout.addLayout(leftLayout)
