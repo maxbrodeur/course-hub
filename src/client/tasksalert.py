@@ -32,7 +32,7 @@ class TasksView(QWidget):
 
 	def addTask(self, event):
 		item = NewTask(event)
-		self.addItem(item)
+		self.newList.addItem(item)
 
 
 class NewList(QListWidget):
@@ -65,12 +65,12 @@ class NewList(QListWidget):
 class NewTask(QListWidgetItem):
 	def __init__(self, event):
 		type_ = event['''type''']
-		if 'deadline' in event.keys():
+		key = 'deadline' if 'deadline' in event.keys() else 'date'
+		if event[key] is not None:
 			time_str = event['deadline'].strftime("%d/%m/%y")
-		else:
-			time_str = event['date'].strftime("%d/%m/%y")
-
-		display = f'{type_}: Due {time_str}'
+			display = f'{type_}: Due {time_str}'
+		else: 
+			display = f'New {type_}'
 		QListWidgetItem.__init__(self,display)
 		self.data = event
 
