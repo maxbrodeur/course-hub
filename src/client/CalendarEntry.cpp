@@ -6,6 +6,7 @@
 
 enum EntryType { COURSE, TUTORIAL, TASK };
 class CalendarEntry : public QTableWidgetItem {
+public:
     int start, length;
     EntryType type;
     CalendarEntry(int s, int e, EntryType type = EntryType::COURSE) :

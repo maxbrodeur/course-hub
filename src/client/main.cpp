@@ -36,31 +36,10 @@ int pyTest2(){
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append(\".\")");
     CPyObject pModule = PyImport_ImportModule("test_thing");
-//    CPyObject pModule = PyImport_Import(pName);
     PyErr_Print();
-
-//    cout << PyUnicode_AsUTF8(
-//            PyDict_GetItemString(
-//                    PyImport_ImportModule("test_thing"),
-//                    "__version__"
-//            )
-//    ) << endl;
 
     if(pModule)
     {
-//        CPyObject pFunc = PyObject_GetAttrString(pModule, "get_zero");
-//        if(pFunc && PyCallable_Check(pFunc))
-//        {
-//            CPyObject pValue = PyObject_CallObject(pFunc, NULL);
-//            printf("C: get_zero() = %ld\n", PyLong_AsLong(pValue));
-//            CPyObject pFun2 = PyObject_GetAttrString(pModule, "get_another_number");
-//            CPyObject Value_2 = PyObject_CallObject(pFun2, NULL);
-//            printf("another num: %d", PyLong_AsLong(Value_2));
-//        }
-//        else
-//        {
-//            printf("ERROR: function get_zero()\n");
-//        }
         auto val = call_int_function("get_zero", pModule);
         cout << val << endl;
         auto val_2 = call_int_function("long_time", pModule);
@@ -119,6 +98,17 @@ int main(int argc, char *argv[]) {
             "margin-right: 2px; "
             "font-size: 1px;"
             "}"
+//            "QTableWidget::item:selected {"
+//            "border: 1 px;"
+//            " border-radius: 5px; "
+//            "}"
+//            "QTableView::item {"
+//            " border: 1 px solid #d21919; "
+//            " border-radius: 10px; "
+//            " }"
+//            "QTableWidget {"
+//            " gridline-color: gray;"
+//            " }"
 //            "QTabBar::tab:selected {"
 //            "background: red;"
 //            "}"
@@ -144,9 +134,11 @@ int main(int argc, char *argv[]) {
 //    tabs.setStyleSheet("tab::selected { color: red; }");
     tabs.addTab(&btn, "test");
 //    mainLayout.addWidget(&tabs);
+    tabs.calendarTab->schedule->addClass("COMP 360", 2, 7, 3);
 
 //    main.setLayout(&mainLayout);
 //    main.show();
     tabs.show();
+    tabs.resize(1280,720);
     return app.exec();
 }

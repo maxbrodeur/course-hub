@@ -17,6 +17,7 @@
 #include <QSpinBox>
 #include <Qt>
 #include <QtGlobal>
+#include <QTableWidgetItem>
 #include "CalendarEntryDialog.h"
 
 
@@ -32,10 +33,12 @@ CalendarTab::CalendarTab(QWidget *master) : QWidget(master){
     leftBtnLayout->addWidget(addTask);
     btns->setLayout(leftBtnLayout);
 
-    QObject::connect(addCourse, &QPushButton::clicked, this,
-                     [&](){ CalendarEntryDialog("New course").exec(); });
-
     schedule = new Schedule();
+
+    QObject::connect(addCourse, &QPushButton::clicked, this,
+                     [&](){ CalendarEntryDialog("New course", schedule).exec(); });
+
+
 
     QHeaderView *hHeader = schedule->horizontalHeader();
     QHeaderView *vHeader = schedule->verticalHeader();
@@ -48,10 +51,18 @@ CalendarTab::CalendarTab(QWidget *master) : QWidget(master){
     mainLayout->addWidget(btns);
     mainLayout->addWidget(schedule);
 
+    int x = 0;
+
+//    auto *course = new QTableWidgetItem("MATH 340");
+////    course->setFlags(Qt::Item
+//    schedule->setItem(7, 3, course);
+//    schedule->setSpan(7, 3, 3, 1);
+
     setLayout(mainLayout);
 }
 
 CalendarTab::~CalendarTab() noexcept = default;
+
 
 
 
