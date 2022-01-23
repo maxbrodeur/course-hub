@@ -191,8 +191,11 @@ def get_course_information(user_dict):
         for course in new_course_list:
             try:
                 db.add_course(course)
-                db.add_registeredClass(user_dict["email"], course["crn"])
             except psycopg2.errors.UniqueViolation:
+                pass
+            try:
+                db.add_registeredClass(user_dict["email"], course["crn"])
+            except:
                 pass
 
         registered_classes = db.getRegisteredClasses(user_dict["email"])
