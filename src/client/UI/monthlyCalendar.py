@@ -26,14 +26,25 @@ class calendarFrame():
     class examListItem(QListWidgetItem):
         def __init__(self, exam, calendarFrame, parent = None):
             QListWidgetItem.__init__(self, parent)
-            color = QBrush()
-            color.setColor(QColor(179,179,179,200))
-            self.setBackground(color)
             self.setSizeHint(QSize(500, 100))
+            self.setBackground(QColor(128,128,128,100))
             text = calendarFrame.classExamDict[exam[8]] + " " + exam[3]
             self.setText(text)
             self.setTextAlignment(Qt.AlignJustify)
+
+    class calendar(QCalendarWidget):
+        def __init__(self,calendarFrame, parent = None):
+            super().__init__(parent)
+            self.calendarFrame = calendarFrame
             
+        def paintCell(self, painter, rect, date):
+            super().paintCell(painter, rect,date)
+            for exam in self.calendarFrame.assignmentsList:
+                print(exam[4])
+                qdate = QDate.fromString(exam[4])
+                if date in qdate:
+                    painter.setBrush(Qt.red)
+                    painter.drawEllipse(rect.topLeft() + QPoint(12,7),3,3)
 
 
 
@@ -51,12 +62,20 @@ class calendarFrame():
         # )
         for exam in self.examsList:
             self.list.addItem(self.examListItem(exam, self))
-        self.calendar = QCalendarWidget()
-        self.calendar.setGridVisible(True)
-        self.calendar
+        self.cal = self.calendar(self)
+        self.cal.setGridVisible(True)
+
+        # image = QPixmap(5,5)
+        # painter = QPainter(image)
+        # painter.setBrush(QColor("red"))
+        # rect = QRect(5,5,5,5)
+        # calendarF.calendar.paintCell(painter,rect,QDate(2022,1,12))
+        # painter.fillRect(rect,painter.brush())
+        # painter.end()
+        
         self.list.setMaximumWidth(500)
         self.layout.addWidget(self.list)
-        self.layout.addWidget(self.calendar)
+        self.layout.addWidget(self.cal)
         self.mainWidget.setLayout(self.layout)
         return self.mainWidget
 
