@@ -128,9 +128,9 @@ build CMakeFiles/core_ui.dir/CalendarEntry.cpp.o: CXX_COMPILER__core_ui_Debug /U
   OBJECT_DIR = CMakeFiles/core_ui.dir
   OBJECT_FILE_DIR = CMakeFiles/core_ui.dir
 
-build CMakeFiles/core_ui.dir/pytest.cpp.o: CXX_COMPILER__core_ui_Debug /Users/theofabilous/Documents/GitHub/course-hub/src/client/pytest.cpp || cmake_object_order_depends_target_core_ui
+build CMakeFiles/core_ui.dir/pythoncomm.cpp.o: CXX_COMPILER__core_ui_Debug /Users/theofabilous/Documents/GitHub/course-hub/src/client/pythoncomm.cpp || cmake_object_order_depends_target_core_ui
   DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB
-  DEP_FILE = CMakeFiles/core_ui.dir/pytest.cpp.o.d
+  DEP_FILE = CMakeFiles/core_ui.dir/pythoncomm.cpp.o.d
   FLAGS = -std=c++11  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -fPIC -std=gnu++14
   INCLUDES = -isystem /Users/theofabilous/opt/anaconda3/include/qt -isystem /Users/theofabilous/opt/anaconda3/include/qt/QtCore -isystem /Users/theofabilous/opt/anaconda3/./mkspecs/macx-clang -isystem /Users/theofabilous/opt/anaconda3/include/qt/QtGui -isystem /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/OpenGL.framework/Headers -isystem /Users/theofabilous/opt/anaconda3/include/qt/QtWidgets
   OBJECT_DIR = CMakeFiles/core_ui.dir
@@ -144,7 +144,7 @@ build CMakeFiles/core_ui.dir/pytest.cpp.o: CXX_COMPILER__core_ui_Debug /Users/th
 #############################################
 # Link the executable core_ui
 
-build core_ui: CXX_EXECUTABLE_LINKER__core_ui_Debug CMakeFiles/core_ui.dir/main.cpp.o CMakeFiles/core_ui.dir/MainWidget.cpp.o CMakeFiles/core_ui.dir/MainTabs.cpp.o CMakeFiles/core_ui.dir/Schedule.cpp.o CMakeFiles/core_ui.dir/CalendarTab.cpp.o CMakeFiles/core_ui.dir/CalendarEntryDialog.cpp.o CMakeFiles/core_ui.dir/CalendarEntry.cpp.o CMakeFiles/core_ui.dir/pytest.cpp.o | /Users/theofabilous/opt/anaconda3/lib/libQt5Widgets.5.9.7.dylib /Users/theofabilous/opt/anaconda3/lib/libpython3.9.dylib /Users/theofabilous/opt/anaconda3/lib/libQt5Gui.5.9.7.dylib /Users/theofabilous/opt/anaconda3/lib/libQt5Core.5.9.7.dylib
+build core_ui: CXX_EXECUTABLE_LINKER__core_ui_Debug CMakeFiles/core_ui.dir/main.cpp.o CMakeFiles/core_ui.dir/MainWidget.cpp.o CMakeFiles/core_ui.dir/MainTabs.cpp.o CMakeFiles/core_ui.dir/Schedule.cpp.o CMakeFiles/core_ui.dir/CalendarTab.cpp.o CMakeFiles/core_ui.dir/CalendarEntryDialog.cpp.o CMakeFiles/core_ui.dir/CalendarEntry.cpp.o CMakeFiles/core_ui.dir/pythoncomm.cpp.o | /Users/theofabilous/opt/anaconda3/lib/libQt5Widgets.5.9.7.dylib /Users/theofabilous/opt/anaconda3/lib/libpython3.9.dylib /Users/theofabilous/opt/anaconda3/lib/libQt5Gui.5.9.7.dylib /Users/theofabilous/opt/anaconda3/lib/libQt5Core.5.9.7.dylib
   FLAGS = -std=c++11  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15
   LINK_LIBRARIES = -Wl,-rpath,/Users/theofabilous/opt/anaconda3/lib  /Users/theofabilous/opt/anaconda3/lib/libQt5Widgets.5.9.7.dylib  -lPython  /Users/theofabilous/opt/anaconda3/lib/libpython3.9.dylib  /Users/theofabilous/opt/anaconda3/lib/libQt5Gui.5.9.7.dylib  /Users/theofabilous/opt/anaconda3/lib/libQt5Core.5.9.7.dylib
   OBJECT_DIR = CMakeFiles/core_ui.dir
