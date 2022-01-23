@@ -165,11 +165,8 @@ def get_information(user_dict):
         id, subject, _, *other = course
         final_courses.append(asdict(Course(*(id, subject, *other))))
 
-    for course in final_courses:
-        course["startTime"] = course["startTime"].strftime("%H:%M")
-        course["endTime"] = course["endTime"].strftime("%H:%M")
 
-    return json.dumps(final_courses)
+    return final_courses
 
 
 def get_courses_information(course_list):
