@@ -3,3 +3,4 @@
 .DS_Store
 *.pyc
 assets/secrets.txt
+user.txt
