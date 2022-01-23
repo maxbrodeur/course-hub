@@ -127,6 +127,7 @@ def parse_events(announcements):
 			union = list(set(keywords) & set(words))
 			if union:
 				event = {}
+				event['subject'] = anc['subject']
 				typ = ""
 				[typ := typ + " " + key for key in union]
 				typ = typ[1:]
