@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, QSize
 
 class Enter:
 	def __init__(self, lbl):
-		self.layout = QGridLayout()
+		self.layout = QGridLayout(2,2)
 		# self.setI
 		self.label = QLabel(lbl)
 		self.entry = QLineEdit()
