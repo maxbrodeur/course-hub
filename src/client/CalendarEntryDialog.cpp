@@ -16,18 +16,18 @@
 #include <Qt>
 #include <QComboBox>
 #include <algorithm>
+#include "CalendarEntry.cpp"
 
 using std::array;
 using std::string;
 using std::for_each;
 
-CalendarEntryDialog::CalendarEntryDialog(const QString &s, QWidget *master): QDialog(master) {
+CalendarEntryDialog::CalendarEntryDialog(const QString &s,
+                                         QTableWidget *table, QWidget *master):
+                                         QDialog(master) {
+    cal = table;
     sw = true;
     auto *lyt = new QVBoxLayout();
-//    QSpinBox start;
-//    start.setRange(-1, 13);
-//    start.setValue(8);
-//    start.setSuffix(" am");
 
     setWindowTitle(s);
 
@@ -67,6 +67,8 @@ CalendarEntryDialog::CalendarEntryDialog(const QString &s, QWidget *master): QDi
 
     lyt->addLayout(timeLayout);
     auto *btn = new QPushButton("Add");
+    QObject::connect(btn, &QPushButton::clicked, this,
+                     &CalendarEntryDialog::addSignal);
     lyt->addLayout(durLayout);
     lyt->addWidget(name);
     lyt->addWidget(dayCombo);
@@ -100,4 +102,14 @@ void CalendarEntryDialog::formatTime(int i) {
             sw = true;
         }
     }
+}
+
+void CalendarEntryDialog::addSignal(){
+    auto *newCourse = new CalendarEntry(
+            this->start->value(), this->length->value());
+    array<string, 7> days{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    int col=0;
+    while(days[col++] != this->day){
+    }
+    cal->setItem(newCourse->start, col, newCourse);
 }
