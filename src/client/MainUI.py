@@ -21,6 +21,7 @@ from login import Login
 __DEBUG__ = True
 
 
+
 @dataclass(slots=True)
 class User:
 	email: str = ""
@@ -36,14 +37,20 @@ class User:
 file_dir = path.dirname(path.realpath(__file__))
 assets_dir = file_dir+"/../../assets/icons/"
 
-'''
-ENUMS
-'''
+
+########## ENUM ###########
+
 class EntryKind(IntEnum):
 	COURSE = 0
 	TUTORIAL = 1
 	LAB = 2
 	CUSTOM = 3
+
+
+class QueryExtent(IntEnum):
+	MINERVA = 0
+	ALL = 1
+
 
 
 DAYS_MAP = {day:i for i,day in enumerate(('M', 'T', 'W', 'R', 'F'))}
@@ -52,7 +59,7 @@ DAYS_MAP = {day:i for i,day in enumerate(('M', 'T', 'W', 'R', 'F'))}
 def getCRNDict(courses):
 	crn_map = {}
 	for course in courses:
-		course_name = course['subject']+"-"+course["courseNb"]
+		course_name = str(course['subject'])+"-"+str(course["courseNb"])
 		crn_map[course_name] = int(course["crn"])
 	return crn_map
 
@@ -69,6 +76,16 @@ class MainTabs(QTabWidget):
 		self.insertMonthly()
 		self.tabBar().setIconSize(QSize(70,70))
 		self.setCornerIcon()
+
+
+	def query(self, extent=QueryExtent.ALL):
+		for course in get_course_information(self.user.user_dict):
+			self.calendar.addCourse(self.user, course)
+
+		self.requestNewEvents()
+
+		# if extent == QueryExtent.ALL:
+
 
 
 	def fixTabIcons(self):
@@ -120,8 +137,6 @@ class MainTabs(QTabWidget):
 		# logoWidget.setSizePolicy(sizer);
 		logoWidget.setPixmap(logo.pixmap(QSize(300,160)))
 		self.setCornerWidget(logoWidget, Qt.TopLeftCorner)
-
-
 
 
 class Entry(QTableWidgetItem):
@@ -270,9 +285,8 @@ cal = x.calendar
 # 	"password": user.pw
 # }
 
-courses = get_course_information(user.user_dict)
-for course in courses:
-	cal.addCourse(user, course)
+x.query()
+
 x.fixTabIcons()
 x.show()
 x.fixTabIcons()
