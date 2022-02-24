@@ -1,5 +1,5 @@
 # [course-hub](https://devpost.com/software/course-hub-j03qct)
-*FULL DESCRIPTION ON DEV POST [HERE](https://devpost.com/software/course-hub-j03qct)*
+#### *FULL DESCRIPTION ON DEV POST [HERE](https://devpost.com/software/course-hub-j03qct)*
 As college students, we have always struggled to find an efficient way to track the constant flow of assignments, quizzes, midterms, etc. Upon launch, Course Hub automatically retrieves and interprets new course information on McGill's websites (MyCourses and Minerva). This information is then added to the Course Hub calendar, which is fully editable. Our app also fetches and displays the student's schedule. **This was a project for the McHacks 2022 hackathon**
 
 ## HOW TO USE
